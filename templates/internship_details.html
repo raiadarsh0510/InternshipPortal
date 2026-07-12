@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ internship.title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow-lg border-0">
+
+<div class="card-body">
+
+<div class="row">
+
+<!-- ================= LEFT ================= -->
+
+<div class="col-lg-8">
+
+<div class="d-flex align-items-center mb-4">
+
+{% if internship.company_logo %}
+
+<img
+src="{{ url_for('static',
+filename='images/company_logos/' + internship.company_logo) }}"
+class="company-logo me-3">
+
+{% else %}
+
+<div
+style="
+width:90px;
+height:90px;
+background:#f8f9fa;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:40px;
+border-radius:15px;">
+
+🏢
+
+</div>
+
+{% endif %}
+
+<div>
+
+<h2 class="fw-bold">
+
+{{ internship.title }}
+
+</h2>
+
+<h4 class="text-primary">
+
+{{ internship.company }}
+
+</h4>
+
+</div>
+
+</div>
+
+<div class="mb-3">
+
+<span class="badge bg-primary me-2">
+
+{{ internship.category }}
+
+</span>
+
+<span class="badge bg-success me-2">
+
+{{ internship.internship_type }}
+
+</span>
+
+<span class="badge bg-warning text-dark">
+
+{{ internship.experience }}
+
+</span>
+
+</div>
+
+<hr>
+
+<h4>
+
+📄 Internship Description
+
+</h4>
+
+<p>
+
+{{ internship.description }}
+
+</p>
+
+<hr>
+
+<h4>
+
+🛠 Required Skills
+
+</h4>
+
+{% if internship.skills %}
+
+{% for skill in internship.skills.split(",") %}
+
+<span
+class="badge bg-primary me-2 mb-2 p-2">
+
+{{ skill.strip() }}
+
+</span>
+
+{% endfor %}
+
+{% endif %}
+
+<hr>
+
+<h4>
+
+🎯 Responsibilities
+
+</h4>
+
+<p>
+
+{{ internship.responsibilities or "Not Mentioned" }}
+
+</p>
+
+<hr>
+
+<h4>
+
+📌 Requirements
+
+</h4>
+
+<p>
+
+{{ internship.requirements or "Not Mentioned" }}
+
+</p>
+
+<hr>
+
+<h4>
+
+🎁 Benefits
+
+</h4>
+
+<p>
+
+{{ internship.benefits or "Not Mentioned" }}
+
+</p>
+
+</div>
+
+<!-- ================= RIGHT ================= -->
+
+<div class="col-lg-4">
+
+<div class="card border-primary shadow-sm">
+
+<div class="card-header bg-primary text-white">
+
+<h5 class="mb-0">
+
+Internship Overview
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<p>
+
+📍 <strong>Location</strong>
+
+<br>
+
+{{ internship.location }}
+
+</p>
+
+<hr>
+
+<p>
+
+💰 <strong>Stipend</strong>
+
+<br>
+
+₹{{ internship.stipend }}
+
+</p>
+
+<hr>
+
+<p>
+
+⏳ <strong>Duration</strong>
+
+<br>
+
+{{ internship.duration }}
+
+</p>
+
+<hr>
+
+<p>
+
+📅 <strong>Apply Before</strong>
+
+<br>
+
+{{ internship.last_date }}
+
+</p>
+
+<hr>
+
+{% if internship.last_date >= today %}
+
+<span
+class="badge bg-success fs-6">
+
+Active
+
+</span>
+
+{% else %}
+
+<span
+class="badge bg-danger fs-6">
+
+Expired
+
+</span>
+
+{% endif %}
+
+<div class="d-grid gap-2 mt-4">
+
+{% if current_user.role|lower=="student" %}
+
+{% if internship.last_date >= today %}
+
+<a
+href="{{ url_for('apply_internship',
+internship_id=internship.id) }}"
+class="btn btn-success btn-lg">
+
+🚀 Apply Now
+
+</a>
+
+{% else %}
+
+<button
+class="btn btn-secondary btn-lg"
+disabled>
+
+Expired
+
+</button>
+
+{% endif %}
+
+<a
+href="{{ url_for('save_internship',
+internship_id=internship.id) }}"
+class="btn btn-outline-primary">
+
+❤️ Save Internship
+
+</a>
+
+{% endif %}
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-dark">
+
+⬅ Back
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm mt-4">
+
+<div class="card-body text-center">
+
+<h5>
+
+Why Apply?
+
+</h5>
+
+<hr>
+
+<p>
+
+✔ Industry Experience
+
+</p>
+
+<p>
+
+✔ Certificate
+
+</p>
+
+<p>
+
+✔ Skill Development
+
+</p>
+
+<p>
+
+✔ Networking Opportunity
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

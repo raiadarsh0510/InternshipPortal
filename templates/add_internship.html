@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Add Internship{% endblock %}
+
+{% block content %}
+
+<div class="container-lg mt-4">
+<div class="card shadow-lg border-0">
+
+<div class="card-header bg-success text-white">
+<h2 class="mb-0" text-center>🚀 Add Internship</h2>
+</div>
+
+<div class="card-body">
+
+<form method="POST" enctype="multipart/form-data">
+
+<h4 class="text-success mb-3">🏢 Company Information</h4>
+
+<div class="row">
+<div class="col-md-6 mb-3">
+<label>Company Name</label>
+<input type="text" name="company" class="form-control" placeholder="Google, Microsoft..." required>
+</div>
+
+<div class="col-md-6 mb-3">
+<label>Company Logo</label>
+<input type="file" name="company_logo" class="form-control" accept=".png,.jpg,.jpeg">
+</div>
+</div>
+
+<hr>
+
+<h4 class="text-primary mb-3">💼 Internship Information</h4>
+
+<div class="mb-3">
+<label>Internship Title</label>
+<input type="text" name="title" class="form-control" placeholder="Software Development Intern" required>
+</div>
+
+<div class="row">
+<div class="col-md-4 mb-3">
+<label>Category</label>
+<select name="category" class="form-select">
+<option>Software Development</option>
+<option>AI / Machine Learning</option>
+<option>Data Science</option>
+<option>Web Development</option>
+<option>Android</option>
+<option>Cyber Security</option>
+<option>Cloud Computing</option>
+<option>Finance</option>
+<option>Marketing</option>
+</select>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Internship Type</label>
+<select name="internship_type" class="form-select">
+<option>Remote</option>
+<option>Hybrid</option>
+<option>On-site</option>
+</select>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Experience</label>
+<select name="experience" class="form-select">
+<option>Fresher</option>
+<option>Intermediate</option>
+<option>Experienced</option>
+</select>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-3 mb-3">
+<label>Location</label>
+<input type="text" name="location" class="form-control" placeholder="Bangalore" required>
+</div>
+
+<div class="col-md-3 mb-3">
+<label>Stipend</label>
+<input type="number" name="stipend" class="form-control" placeholder="15000">
+</div>
+
+<div class="col-md-3 mb-3">
+<label>Duration</label>
+<input type="text" name="duration" class="form-control" placeholder="6 Months">
+</div>
+
+<div class="col-md-3 mb-3">
+<label>Last Date</label>
+<input type="date" name="last_date" class="form-control" required>
+</div>
+</div>
+
+<div class="mb-3">
+<label>Required Skills</label>
+<input type="text" name="skills" class="form-control" placeholder="Python, Flask, SQL, HTML, CSS">
+</div>
+
+<hr>
+
+<h4 class="text-primary mb-3">📝 Job Details</h4>
+
+<div class="mb-3">
+<label>Responsibilities</label>
+<textarea name="responsibilities" rows="4" class="form-control" placeholder="Write job responsibilities..."></textarea>
+</div>
+
+<div class="mb-3">
+<label>Requirements</label>
+<textarea name="requirements" rows="4" class="form-control" placeholder="Mention eligibility criteria..."></textarea>
+</div>
+
+<div class="mb-3">
+<label>Benefits</label>
+<textarea name="benefits" rows="4" class="form-control" placeholder="Certificate, PPO, Flexible hours..."></textarea>
+</div>
+
+<div class="mb-3">
+<label>Description</label>
+<textarea name="description" rows="5" class="form-control" placeholder="Describe the internship..."></textarea>
+</div>
+
+<div class="d-flex gap-2 mt-4">
+<button class="btn btn-success btn-lg">🚀 Post Internship</button>
+<a href="{{ url_for('internships') }}" class="btn btn-secondary btn-lg">⬅ Cancel</a>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+{% endblock %}

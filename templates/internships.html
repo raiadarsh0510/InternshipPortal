@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}
+Internships
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Available Internships</h2>
+
+<!-- Search & Filter -->
+<form method="GET" action="{{ url_for('internships') }}" class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search Title / Company / Skill"
+            value="{{ search }}">
+    </div>
+
+    <div class="col-md-2">
+        <input
+            type="text"
+            name="location"
+            class="form-control"
+            placeholder="Location"
+            value="{{ location }}">
+    </div>
+
+    <div class="col-md-2">
+        <input
+            type="number"
+            name="stipend"
+            class="form-control"
+            placeholder="Minimum Stipend"
+            value="{{ stipend }}">
+    </div>
+
+    <div class="col-md-2">
+
+        <select
+            name="sort"
+            class="form-select">
+
+            <option value="newest"
+                {% if sort=="newest" %}selected{% endif %}>
+                Newest
+            </option>
+
+            <option value="highest"
+                {% if sort=="highest" %}selected{% endif %}>
+                Highest Stipend
+            </option>
+
+            <option value="lowest"
+                {% if sort=="lowest" %}selected{% endif %}>
+                Lowest Stipend
+            </option>
+
+            <option value="company"
+                {% if sort=="company" %}selected{% endif %}>
+                Company Name
+            </option>
+
+            <option value="deadline"
+                {% if sort=="deadline" %}selected{% endif %}>
+                Last Date
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button
+            class="btn btn-primary w-100">
+
+            Search
+
+        </button>
+
+    </div>
+
+</form>
+
+<!-- Company Button -->
+{% if current_user.role|lower == "company" %}
+
+<a href="{{ url_for('add_internship') }}"
+   class="btn btn-success mb-4">
+
+    + Add Internship
+
+</a>
+
+{% endif %}
+
+<!-- Internship Cards -->
+{% if internships %}
+
+    {% for internship in internships %}
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                <!-- Logo -->
+
+                <div class="col-md-2 text-center">
+
+                    {% if internship.company_logo %}
+
+                    <img
+                        src="{{ url_for('static',
+                        filename='images/company_logos/' + internship.company_logo) }}"
+                        class="company-logo">
+
+                    {% else %}
+
+                    <div 
+                        style="
+                            width:70px;
+                            height:70px;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            background:#f1f3f5;
+                            border-radius:10px;
+                            font-size:30px;
+                        ">
+
+                        🏢
+
+                    </div>    
+                        
+                    {% endif %}
+
+                </div>
+
+                <!-- Details -->
+
+                <div class="col-md-7">
+
+                    <h3>{{ internship.title }}</h3>
+
+                    <h5>{{ internship.company }}</h5>
+
+                    <p class="mb-1">
+                        📍 {{ internship.location }}
+                    </p>
+
+                    <p class="mb-1">
+                        💰 ₹{{ internship.stipend }}
+                    </p>
+
+                    <p class="mb-1">
+                        ⏳ {{ internship.duration }}
+                    </p>
+
+                    <p class="mb-0">
+                        📅 Last Date:
+                        {{ internship.last_date }}
+
+                        <br>
+
+                        {% if internship.last_date >= today %}
+
+                            <span class="badge bg-success">
+
+                                Active
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Expired
+
+                            </span>
+
+                        {% endif %}
+                    </p>
+
+                </div>
+
+                <!-- Buttons -->
+
+                <div class="col-md-3 text-end">
+
+                    {% if current_user.role|lower == "student" %}
+
+                        <a
+                            href="{{ url_for('internship_details', internship_id=internship.id) }}"
+                            class="btn btn-primary mb-2 w-100">
+
+                            View Details
+
+                        </a>
+
+                        {% if internship.last_date >= today %}
+
+                        <a
+                            href="{{ url_for('apply_internship',
+                            internship_id=internship.id) }}"
+                            class="btn btn-success w-100">
+
+                            Apply
+
+                        </a>
+
+                        {% else %}
+
+                        <button
+                            class="btn btn-secondary w-100"
+                            disabled>
+
+                            Expired
+
+                        </button>
+
+                        {% endif %}
+
+                        <a
+                            href="{{ url_for('save_internship',
+                            internship_id=internship.id) }}"
+                            class="btn btn-outline-primary w-100 mt-2">
+
+                            ❤️ Save
+
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{{ url_for('edit_internship', internship_id=internship.id) }}"
+                            class="btn btn-warning mb-2 w-100">
+
+                            Edit
+
+                        </a>
+
+                        <a
+                            href="{{ url_for('delete_internship', internship_id=internship.id) }}"
+                            class="btn btn-danger mb-2 w-100"
+                            onclick="return confirm('Delete this internship?')">
+
+                            Delete
+
+                        </a>
+
+                        <a
+                            href="{{ url_for('view_applicants', internship_id=internship.id) }}"
+                            class="btn btn-info w-100">
+
+                            View Applicants
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div class="alert alert-info">
+
+    No internships found.
+
+</div>
+
+{% endif %}
+
+{% endblock %}

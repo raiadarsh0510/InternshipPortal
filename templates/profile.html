@@ -1,0 +1,405 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow-lg border-0">
+
+<div
+class="card-header text-white"
+style="background:linear-gradient(135deg,#0d6efd,#6610f2);">
+
+<h2 class="mb-0">
+
+👤 My Profile
+
+</h2>
+
+</div>
+
+<div class="card-body">
+
+<form
+method="POST"
+enctype="multipart/form-data">
+
+<div class="row">
+
+<!-- =========================
+LEFT SIDE
+========================= -->
+
+<div class="col-lg-4">
+
+<div class="text-center">
+
+{% if current_user.profile_image %}
+
+<img
+src="{{ url_for('static',
+filename='images/profiles/' + current_user.profile_image) }}"
+class="profile-image mb-3">
+
+{% else %}
+
+<img
+src="{{ url_for('static', filename='images/default_profile.png') }}"
+class="profile-image mb-3">
+
+{% endif %}
+
+<h3>
+
+{{ current_user.name }}
+
+</h3>
+
+<p class="text-muted">
+
+{{ current_user.role.title() }}
+
+</p>
+
+<hr>
+
+<div class="mb-3">
+
+<label class="form-label fw-bold">
+
+Update Profile Picture
+
+</label>
+
+<input
+type="file"
+name="profile_image"
+class="form-control"
+accept=".jpg,.jpeg,.png">
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label fw-bold">
+
+Upload Resume (PDF)
+
+</label>
+
+<input
+type="file"
+name="resume"
+class="form-control"
+accept=".pdf">
+
+</div>
+
+{% if current_user.resume %}
+
+<a
+href="{{ url_for('static',
+filename='resumes/' + current_user.resume) }}"
+target="_blank"
+class="btn btn-primary w-100 mb-2">
+
+📄 View Resume
+
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<!-- =========================
+RIGHT SIDE
+========================= -->
+
+<div class="col-lg-8">
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Full Name
+
+</label>
+
+<input
+type="text"
+name="name"
+class="form-control"
+value="{{ current_user.name }}"
+required>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Email
+
+</label>
+
+<input
+type="email"
+name="email"
+class="form-control"
+value="{{ current_user.email }}"
+required>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Phone
+
+</label>
+
+<input
+type="text"
+name="phone"
+class="form-control"
+value="{{ current_user.phone or '' }}">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+College
+
+</label>
+
+<input
+type="text"
+name="college"
+class="form-control"
+value="{{ current_user.college or '' }}">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Branch
+
+</label>
+
+<input
+type="text"
+name="branch"
+class="form-control"
+value="{{ current_user.branch or '' }}">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>
+
+Year
+
+</label>
+
+<input
+type="text"
+name="year"
+class="form-control"
+value="{{ current_user.year or '' }}">
+
+</div>
+<div class="col-12 mb-3">
+
+<label>
+
+Skills
+
+</label>
+
+<input
+type="text"
+name="skills"
+class="form-control"
+placeholder="Python, Flask, SQL, HTML, CSS"
+value="{{ current_user.skills or '' }}">
+
+{% if current_user.skills %}
+
+<div class="mt-3">
+
+{% for skill in current_user.skills.split(",") %}
+
+<span class="badge bg-primary me-2 mb-2 p-2">
+
+{{ skill.strip() }}
+
+</span>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="col-12 mb-3">
+
+<label>
+
+Professional Bio
+
+</label>
+
+<textarea
+name="bio"
+rows="5"
+class="form-control"
+placeholder="Write something about yourself...">{{ current_user.bio or '' }}</textarea>
+
+</div>
+
+<!-- =====================
+PROFILE COMPLETION
+===================== -->
+
+<div class="col-12 mt-3">
+
+<div class="card border-success">
+
+<div class="card-body">
+
+<h5 class="mb-3">
+
+📈 Profile Completion
+
+</h5>
+
+{% set score = 20 %}
+
+{% if current_user.phone %}
+{% set score = score + 10 %}
+{% endif %}
+
+{% if current_user.college %}
+{% set score = score + 10 %}
+{% endif %}
+
+{% if current_user.branch %}
+{% set score = score + 10 %}
+{% endif %}
+
+{% if current_user.year %}
+{% set score = score + 10 %}
+{% endif %}
+
+{% if current_user.skills %}
+{% set score = score + 15 %}
+{% endif %}
+
+{% if current_user.bio %}
+{% set score = score + 15 %}
+{% endif %}
+
+{% if current_user.resume %}
+{% set score = score + 10 %}
+{% endif %}
+
+{% if current_user.profile_image %}
+{% set score = score + 10 %}
+{% endif %}
+
+<div class="progress mb-3" style="height:28px;">
+
+<div
+class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+style="width:{{ score }}%;">
+
+{{ score }}%
+
+</div>
+
+</div>
+
+{% if score < 60 %}
+
+<div class="alert alert-warning mb-0">
+
+Complete your profile to improve your chances of getting selected.
+
+</div>
+
+{% elif score < 90 %}
+
+<div class="alert alert-info mb-0">
+
+Your profile is looking good. Add a few more details to complete it.
+
+</div>
+
+{% else %}
+
+<div class="alert alert-success mb-0">
+
+Excellent! Your profile is almost complete.
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-12 mt-4">
+
+<button
+type="submit"
+class="btn btn-success btn-lg"
+onclick="return confirm('Save changes to your profile?')">
+
+💾 Save Profile
+
+</button>
+
+<a
+href="{{ url_for('dashboard') }}"
+class="btn btn-secondary btn-lg ms-2">
+
+⬅ Back
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}
+Applicants
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <!-- Header -->
+    <div class="card shadow-lg border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h2 class="mb-1">
+
+                        👥 Applicants
+
+                    </h2>
+
+                    <h5 class="mb-0">
+
+                        {{ internship.title }}
+
+                    </h5>
+
+                    <small>
+
+                        {{ internship.company }}
+
+                    </small>
+
+                </div>
+
+                <a
+                    href="{{ url_for('internships') }}"
+                    class="btn btn-light">
+
+                    ⬅ Back
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if applications %}
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Student</th>
+
+                            <th>Contact</th>
+
+                            <th>College</th>
+
+                            <th>Skills</th>
+
+                            <th>Resume</th>
+
+                            <th>Status</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for application, student in applications %}
+
+                    <tr>
+
+                        <!-- Student -->
+
+                        <td>
+
+                            <div class="d-flex align-items-center">
+
+                                {% if student.profile_image %}
+
+                                <img
+                                    src="{{ url_for('static', filename='images/profiles/' + student.profile_image) }}"
+                                    class="profile-image me-3"
+                                    style="width:60px;height:60px;">
+
+                                {% else %}
+
+                                <img
+                                    src="{{ url_for('static', filename='images/default_profile.png') }}"
+                                    class="profile-image me-3"
+                                    style="width:60px;height:60px;">
+
+                                {% endif %}
+
+                                <div>
+
+                                    <a
+                                        href="{{ url_for('student_profile', student_id=student.id) }}"
+                                        class="fw-bold text-decoration-none">
+
+                                        {{ student.name }}
+
+                                    </a>
+
+                                    <br>
+
+                                    <small class="text-muted">
+
+                                        Student ID : {{ student.id }}
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <!-- Contact -->
+
+                        <td>
+
+                            <strong>
+
+                                {{ student.email }}
+
+                            </strong>
+
+                            <br>
+
+                            {{ student.phone or "-" }}
+
+                        </td>
+
+                        <!-- College -->
+
+                        <td>
+
+                            <strong>
+
+                                {{ student.college or "-" }}
+
+                            </strong>
+
+                            <br>
+
+                            <small>
+
+                                {{ student.branch or "" }}
+
+                                {% if student.year %}
+                                    | {{ student.year }}
+                                {% endif %}
+
+                            </small>
+
+                        </td>
+
+                        <!-- Skills -->
+
+                        <td>
+
+                            {% if student.skills %}
+
+                                {% for skill in student.skills.split(",") %}
+
+                                    <span
+                                        class="badge bg-primary me-1 mb-1">
+
+                                        {{ skill.strip() }}
+
+                                    </span>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <span class="text-muted">
+
+                                    No Skills
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Resume -->
+
+                        <td>
+
+                            {% if student.resume %}
+
+                            <a
+                                href="{{ url_for('static', filename='resumes/' + student.resume) }}"
+                                target="_blank"
+                                class="btn btn-primary btn-sm mb-1">
+
+                                View
+
+                            </a>
+
+                            <br>
+
+                            <a
+                                href="{{ url_for('static', filename='resumes/' + student.resume) }}"
+                                download
+                                class="btn btn-success btn-sm">
+
+                                Download
+
+                            </a>
+
+                            {% else %}
+
+                            <span class="badge bg-secondary">
+
+                                No Resume
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if application.status=="Pending" %}
+
+                            <span class="badge bg-warning text-dark fs-6">
+
+                                ⏳ Pending
+
+                            </span>
+
+                            {% elif application.status=="Accepted" %}
+
+                            <span class="badge bg-success fs-6">
+
+                                ✅ Accepted
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-danger fs-6">
+
+                                ❌ Rejected
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Action -->
+
+                        <td>
+
+                            {% if application.status=="Pending" %}
+
+                            <div class="d-grid gap-2">
+
+                                <a
+                                    href="{{ url_for('accept_application', application_id=application.id) }}"
+                                    class="btn btn-success btn-sm">
+
+                                    ✅ Accept
+
+                                </a>
+
+                                <a
+                                    href="{{ url_for('reject_application', application_id=application.id) }}"
+                                    class="btn btn-danger btn-sm">
+
+                                    ❌ Reject
+
+                                </a>
+
+                            </div>
+
+                            {% else %}
+
+                            <span class="text-muted">
+
+                                Completed
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="card shadow border-0">
+
+        <div class="card-body text-center p-5">
+
+            <h1>
+
+                📭
+
+            </h1>
+
+            <h3>
+
+                No Applicants Yet
+
+            </h3>
+
+            <p class="text-muted">
+
+                Students who apply for this internship will appear here.
+
+            </p>
+
+            <a
+                href="{{ url_for('internships') }}"
+                class="btn btn-primary">
+
+                View Internships
+
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

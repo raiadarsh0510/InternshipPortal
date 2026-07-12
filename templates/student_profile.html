@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+<h3>{{ student.name }}</h3>
+</div>
+
+<div class="card-body">
+
+{% if student.profile_image %}
+
+<img
+src="{{ url_for('static', filename='images/profiles/' + student.profile_image) }}"
+width="180"
+class="img-thumbnail mb-3">
+
+{% endif %}
+
+<table class="table table-bordered">
+
+<tr>
+<th>Email</th>
+<td>{{ student.email }}</td>
+</tr>
+
+<tr>
+<th>Phone</th>
+<td>{{ student.phone }}</td>
+</tr>
+
+<tr>
+<th>College</th>
+<td>{{ student.college }}</td>
+</tr>
+
+<tr>
+<th>Branch</th>
+<td>{{ student.branch }}</td>
+</tr>
+
+<tr>
+<th>Year</th>
+<td>{{ student.year }}</td>
+</tr>
+
+<tr>
+<th>Skills</th>
+<td>{{ student.skills }}</td>
+</tr>
+
+<tr>
+<th>Bio</th>
+<td>{{ student.bio }}</td>
+</tr>
+
+</table>
+
+{% if student.resume %}
+
+<a
+href="{{ url_for('static', filename='resumes/' + student.resume) }}"
+target="_blank"
+class="btn btn-primary">
+
+View Resume
+
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

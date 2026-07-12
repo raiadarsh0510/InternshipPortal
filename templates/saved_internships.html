@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}
+Saved Internships
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2 class="fw-bold">
+
+❤️ Saved Internships
+
+</h2>
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-primary">
+
+💼 Browse More
+
+</a>
+
+</div>
+
+{% if internships %}
+
+<div class="row">
+
+{% for internship in internships %}
+
+<div class="col-lg-6 mb-4">
+
+<div class="card shadow-lg border-0 h-100">
+
+<div class="card-body">
+
+<div class="d-flex align-items-center mb-3">
+
+{% if internship.company_logo %}
+
+<img
+src="{{ url_for('static',
+filename='images/company_logos/' + internship.company_logo) }}"
+class="company-logo me-3">
+
+{% else %}
+
+<div
+style="
+width:75px;
+height:75px;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f8f9fa;
+border-radius:15px;
+font-size:35px;">
+
+🏢
+
+</div>
+
+{% endif %}
+
+<div>
+
+<h4 class="fw-bold mb-1">
+
+{{ internship.title }}
+
+</h4>
+
+<h5 class="text-primary">
+
+{{ internship.company }}
+
+</h5>
+
+</div>
+
+</div>
+
+<hr>
+
+<p>
+
+📍
+
+<strong>Location:</strong>
+
+{{ internship.location }}
+
+</p>
+
+<p>
+
+💰
+
+<strong>Stipend:</strong>
+
+₹{{ internship.stipend }}
+
+</p>
+
+<p>
+
+⏳
+
+<strong>Duration:</strong>
+
+{{ internship.duration }}
+
+</p>
+
+{% if internship.category %}
+
+<span class="badge bg-primary">
+
+{{ internship.category }}
+
+</span>
+
+{% endif %}
+
+{% if internship.internship_type %}
+
+<span class="badge bg-success">
+
+{{ internship.internship_type }}
+
+</span>
+
+{% endif %}
+
+{% if internship.experience %}
+
+<span class="badge bg-warning text-dark">
+
+{{ internship.experience }}
+
+</span>
+
+{% endif %}
+
+<div class="d-grid gap-2 mt-4">
+
+<a
+href="{{ url_for('internship_details',
+internship_id=internship.id) }}"
+class="btn btn-primary">
+
+👀 View Details
+
+</a>
+
+<a
+href="{{ url_for('apply_internship',
+internship_id=internship.id) }}"
+class="btn btn-success">
+
+🚀 Apply Now
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="card shadow border-0">
+
+<div class="card-body text-center p-5">
+
+<h1>
+
+💔
+
+</h1>
+
+<h3>
+
+No Saved Internships
+
+</h3>
+
+<p class="text-muted">
+
+Save internships to access them quickly later.
+
+</p>
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-primary">
+
+Browse Internships
+
+</a>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

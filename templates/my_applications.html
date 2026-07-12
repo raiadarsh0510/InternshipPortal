@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Applications
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2 class="fw-bold">
+
+📄 My Applications
+
+</h2>
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-primary">
+
+➕ Browse More Internships
+
+</a>
+
+</div>
+
+{% if application_data %}
+
+{% for application in application_data %}
+
+<div class="card shadow-lg border-0 mb-4">
+
+<div class="card-body">
+
+<div class="row align-items-center">
+
+<!-- Company Logo -->
+
+<div class="col-md-2 text-center">
+
+{% if application.company_logo %}
+
+<img
+src="{{ url_for('static',
+filename='images/company_logos/' + application.company_logo) }}"
+class="company-logo">
+
+{% else %}
+
+<div
+style="
+width:80px;
+height:80px;
+margin:auto;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f8f9fa;
+border-radius:15px;
+font-size:40px;">
+
+🏢
+
+</div>
+
+{% endif %}
+
+</div>
+
+<!-- Internship Details -->
+
+<div class="col-md-6">
+
+<h3 class="fw-bold">
+
+{{ application.title }}
+
+</h3>
+
+<h5 class="text-primary">
+
+{{ application.company }}
+
+</h5>
+
+<p class="mb-1">
+
+📍 {{ application.location }}
+
+</p>
+
+<p class="mb-1">
+
+💰 ₹{{ application.stipend }}
+
+</p>
+
+<p>
+
+⏳ {{ application.duration }}
+
+</p>
+
+</div>
+
+<!-- Status -->
+
+<div class="col-md-2 text-center">
+
+{% if application.status=="Pending" %}
+
+<span class="badge bg-warning text-dark fs-6">
+
+⏳ Pending
+
+</span>
+
+{% elif application.status=="Accepted" %}
+
+<span class="badge bg-success fs-6">
+
+✅ Accepted
+
+</span>
+
+{% else %}
+
+<span class="badge bg-danger fs-6">
+
+❌ Rejected
+
+</span>
+
+{% endif %}
+
+</div>
+
+<!-- Buttons -->
+
+<div class="col-md-2">
+
+<a
+href="{{ url_for('internship_details',
+internship_id=application.internship_id) }}"
+class="btn btn-primary w-100 mb-2">
+
+View
+
+</a>
+
+<a
+href="{{ url_for('delete_application',
+application_id=application.id) }}"
+class="btn btn-outline-danger w-100"
+onclick="return confirm('Withdraw this application?')">
+
+Withdraw
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="card shadow border-0">
+
+<div class="card-body text-center p-5">
+
+<h1>
+
+📭
+
+</h1>
+
+<h3>
+
+No Applications Yet
+
+</h3>
+
+<p class="text-muted">
+
+Start applying for internships to track them here.
+
+</p>
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-primary">
+
+Browse Internships
+
+</a>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

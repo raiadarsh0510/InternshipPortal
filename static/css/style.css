@@ -1,0 +1,272 @@
+/* ==========================================
+   Google Font
+========================================== */
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:#f4f7fb;
+
+    color:#2c3e50;
+
+}
+
+/* ==========================================
+   Navbar
+========================================== */
+
+.navbar{
+
+    background:linear-gradient(90deg,#0d6efd,#3b82f6);
+
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+
+}
+
+.navbar-brand{
+
+    font-size:24px;
+
+    font-weight:700;
+
+}
+
+.nav-link{
+
+    color:white!important;
+
+    margin-left:10px;
+
+    transition:.3s;
+
+}
+
+.nav-link:hover{
+
+    color:#ffe082!important;
+
+}
+
+/* ==========================================
+   Cards
+========================================== */
+
+.card{
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 20px 35px rgba(0,0,0,.15);
+
+}
+
+/* ==========================================
+   Buttons
+========================================== */
+
+.btn{
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+   Forms
+========================================== */
+
+.form-control,
+.form-select{
+
+    border-radius:10px;
+
+    min-height:46px;
+
+}
+
+.form-control:focus,
+.form-select:focus{
+
+    border-color:#0d6efd;
+
+    box-shadow:0 0 10px rgba(13,110,253,.25);
+
+}
+
+/* ==========================================
+   Tables
+========================================== */
+
+.table{
+
+    background:white;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+}
+
+.table thead{
+
+    background:#0d6efd;
+
+    color:white;
+
+}
+
+/* ==========================================
+   Internship Logo
+========================================== */
+
+.company-logo{
+
+    width:70px;
+
+    height:70px;
+
+    object-fit:contain;
+
+    border-radius:12px;
+
+    background:white;
+
+    padding:5px;
+
+    border:1px solid #ddd;
+
+}
+
+/* ==========================================
+   Dashboard Numbers
+========================================== */
+
+.dashboard-card h2{
+
+    font-size:38px;
+
+    font-weight:700;
+
+}
+
+.dashboard-card h5{
+
+    color:#6c757d;
+
+}
+
+/* ==========================================
+   Profile Image
+========================================== */
+
+.profile-image{
+    width:180px;
+    height:180px;
+
+    border-radius:50%;
+    border:5px solid white;
+    box-shadow:0 5px 20px rgba(0,0,0,.2);
+
+    object-fit:cover;
+    object-position:center center;
+
+    display:block;
+    margin:0 auto;
+}
+
+/* ==========================================
+   Badges
+========================================== */
+
+.badge{
+
+    padding:8px 15px;
+
+    font-size:14px;
+
+}
+
+/* ==========================================
+   Footer
+========================================== */
+
+footer{
+
+    background:#212529;
+
+    color:white;
+
+    margin-top:80px;
+
+}
+
+/* ==========================================
+   Animation
+========================================== */
+
+.fade-up{
+
+    animation:fadeUp .5s ease;
+
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================
+   Home Page
+========================================== */
+
+.display-4{
+
+    font-weight:700;
+
+    margin-top:60px;
+
+}
+
+.lead{
+
+    font-size:22px;
+
+    color:#555;
+
+}

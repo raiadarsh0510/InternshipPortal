@@ -1,0 +1,746 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<!-- ===========================
+WELCOME SECTION
+=========================== -->
+
+<div class="card text-white shadow-lg mb-4"
+style="
+background:linear-gradient(135deg,#0d6efd,#6610f2);
+border:none;
+border-radius:20px;
+">
+
+<div class="card-body p-5">
+
+<h2 class="fw-bold">
+
+👋 Welcome,
+{{ current_user.name }}
+
+</h2>
+
+<p class="mb-0 fs-5">
+
+{% if current_user.role|lower == "company" %}
+
+Manage your internships, monitor applicants and track hiring statistics.
+
+{% else %}
+
+Track your internship applications and discover new opportunities.
+
+{% endif %}
+
+</p>
+
+</div>
+
+</div>
+
+{% if current_user.role|lower == "company" %}
+
+<!-- ===========================
+COMPANY STATISTICS
+=========================== -->
+
+<div class="row g-4">
+
+<div class="col-lg-4">
+
+<div class="card dashboard-card h-100 border-primary">
+
+<div class="card-body text-center">
+
+<div class="display-5 mb-2">
+
+💼
+
+</div>
+
+<h5>Total Internships</h5>
+
+<h2 class="fw-bold text-primary">
+
+{{ total_posted }}
+
+</h2>
+
+<p class="text-muted">
+
+Internships Posted
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4">
+
+<div class="card dashboard-card h-100 border-success">
+
+<div class="card-body text-center">
+
+<div class="display-5 mb-2">
+
+👥
+
+</div>
+
+<h5>Total Applicants</h5>
+
+<h2 class="fw-bold text-success">
+
+{{ total_applications }}
+
+</h2>
+
+<p class="text-muted">
+
+Applications Received
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4">
+
+<div class="card dashboard-card h-100 border-warning">
+
+<div class="card-body text-center">
+
+<div class="display-5 mb-2">
+
+⏳
+
+</div>
+
+<h5>Pending</h5>
+
+<h2 class="fw-bold text-warning">
+
+{{ pending }}
+
+</h2>
+
+<p class="text-muted">
+
+Awaiting Review
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-6">
+
+<div class="card dashboard-card h-100 border-success">
+
+<div class="card-body text-center">
+
+<div class="display-5 mb-2">
+
+✅
+
+</div>
+
+<h5>Accepted</h5>
+
+<h2 class="fw-bold text-success">
+
+{{ accepted }}
+
+</h2>
+
+<p class="text-muted">
+
+Selected Candidates
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-6">
+
+<div class="card dashboard-card h-100 border-danger">
+
+<div class="card-body text-center">
+
+<div class="display-5 mb-2">
+
+❌
+
+</div>
+
+<h5>Rejected</h5>
+
+<h2 class="fw-bold text-danger">
+
+{{ rejected }}
+
+</h2>
+
+<p class="text-muted">
+
+Rejected Candidates
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===========================
+QUICK ACTIONS
+=========================== -->
+
+<div class="card shadow-lg mt-5">
+
+<div class="card-header bg-primary text-white">
+
+<h4 class="mb-0">
+
+⚡ Quick Actions
+
+</h4>
+
+</div>
+
+<div class="card-body">
+
+<div class="row g-3">
+
+<div class="col-md-4">
+
+<a
+href="{{ url_for('add_internship') }}"
+class="btn btn-success w-100 btn-lg">
+
+➕ Add Internship
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-primary w-100 btn-lg">
+
+💼 View Internships
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a
+href="{{ url_for('profile') }}"
+class="btn btn-warning w-100 btn-lg">
+
+👤 My Profile
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===========================
+APPLICATION ANALYTICS
+=========================== -->
+
+<div class="card shadow-lg mt-5">
+
+<div class="card-header bg-dark text-white">
+
+<h4 class="mb-0">
+
+📊 Application Analytics
+
+</h4>
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-lg-6 text-center">
+
+<div
+style="
+width:320px;
+height:320px;
+margin:auto;
+">
+
+<canvas id="myChart"></canvas>
+
+</div>
+
+</div>
+
+<div class="col-lg-6">
+
+<h5 class="mb-4">
+
+Recruitment Summary
+
+</h5>
+
+<p>
+
+<strong>Total Applications:</strong>
+
+{{ total_applications }}
+
+</p>
+
+<p>
+
+<strong>Accepted:</strong>
+
+{{ accepted }}
+
+</p>
+
+<p>
+
+<strong>Rejected:</strong>
+
+{{ rejected }}
+
+</p>
+
+<p>
+
+<strong>Pending:</strong>
+
+{{ pending }}
+
+</p>
+
+<hr>
+
+<!-- Progress -->
+
+<h5 class="mb-3">
+
+Application Progress
+
+</h5>
+
+<p class="mb-1">
+
+Accepted
+
+</p>
+
+<div class="progress mb-3">
+
+<div
+class="progress-bar bg-success"
+style="width:
+{% if total_applications %}
+{{ (accepted*100/total_applications)|round(0) }}
+{% else %}
+0
+{% endif %}%">
+
+{{ accepted }}
+
+</div>
+
+</div>
+
+<p class="mb-1">
+
+Rejected
+
+</p>
+
+<div class="progress mb-3">
+
+<div
+class="progress-bar bg-danger"
+style="width:
+{% if total_applications %}
+{{ (rejected*100/total_applications)|round(0) }}
+{% else %}
+0
+{% endif %}%">
+
+{{ rejected }}
+
+</div>
+
+</div>
+
+<p class="mb-1">
+
+Pending
+
+</p>
+
+<div class="progress">
+
+<div
+class="progress-bar bg-warning"
+style="width:
+{% if total_applications %}
+{{ (pending*100/total_applications)|round(0) }}
+{% else %}
+0
+{% endif %}%">
+
+{{ pending }}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% else %}
+
+<!-- ===========================
+STUDENT DASHBOARD
+=========================== -->
+
+<div class="row g-4">
+
+<div class="col-md-3">
+
+<div class="card dashboard-card h-100 border-primary">
+
+<div class="card-body text-center">
+
+<div class="display-5">
+
+📄
+
+</div>
+
+<h5>
+
+Applied
+
+</h5>
+
+<h2 class="text-primary">
+
+{{ total_applications }}
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card dashboard-card h-100 border-warning">
+
+<div class="card-body text-center">
+
+<div class="display-5">
+
+⏳
+
+</div>
+
+<h5>
+
+Pending
+
+</h5>
+
+<h2 class="text-warning">
+
+{{ pending }}
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card dashboard-card h-100 border-success">
+
+<div class="card-body text-center">
+
+<div class="display-5">
+
+✅
+
+</div>
+
+<h5>
+
+Accepted
+
+</h5>
+
+<h2 class="text-success">
+
+{{ accepted }}
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card dashboard-card h-100 border-danger">
+
+<div class="card-body text-center">
+
+<div class="display-5">
+
+❌
+
+</div>
+
+<h5>
+
+Rejected
+
+</h5>
+
+<h2 class="text-danger">
+
+{{ rejected }}
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Quick Actions -->
+
+<div class="card shadow-lg mt-5">
+
+<div class="card-header bg-primary text-white">
+
+<h4>
+
+⚡ Quick Actions
+
+</h4>
+
+</div>
+
+<div class="card-body">
+
+<div class="row g-3">
+
+<div class="col-md-4">
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-primary btn-lg w-100">
+
+💼 Browse Internships
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a
+href="{{ url_for('saved_internships') }}"
+class="btn btn-success btn-lg w-100">
+
+❤️ Saved
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a
+href="{{ url_for('profile') }}"
+class="btn btn-warning btn-lg w-100">
+
+👤 My Profile
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card shadow-lg mt-5">
+
+<div class="card-header bg-dark text-white">
+
+<h4>
+
+📊 Application Status
+
+</h4>
+
+</div>
+
+<div class="card-body text-center">
+
+<div
+style="
+width:320px;
+height:320px;
+margin:auto;
+">
+
+<canvas id="myChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+const chart=document.getElementById("myChart");
+
+if(chart){
+
+new Chart(chart,{
+
+type:"doughnut",
+
+data:{
+
+labels:[
+
+"Accepted",
+
+"Rejected",
+
+"Pending"
+
+],
+
+datasets:[{
+
+data:[
+
+Number("{{ accepted }}"),
+
+Number("{{ rejected }}"),
+
+Number("{{ pending }}")
+
+],
+
+backgroundColor:[
+
+"#198754",
+
+"#dc3545",
+
+"#ffc107"
+
+],
+
+borderWidth:2,
+
+borderColor:"#ffffff"
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+plugins:{
+
+legend:{
+
+position:"bottom"
+
+}
+
+}
+
+}
+
+});
+
+}
+
+});
+
+</script>
+
+{% endblock %}

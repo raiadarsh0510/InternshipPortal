@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Internship
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow-lg border-0">
+
+<div class="card-header bg-warning text-dark">
+
+<h2>
+
+✏️ Edit Internship
+
+</h2>
+
+</div>
+
+<div class="card-body">
+
+<form method="POST" enctype="multipart/form-data">
+
+<!-- Company Information -->
+
+<h4 class="mb-3 text-primary">
+
+🏢 Company Information
+
+</h4>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label>Company</label>
+
+<input
+type="text"
+name="company"
+class="form-control"
+value="{{ internship.company }}"
+required>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>Company Logo</label>
+
+<input
+type="file"
+name="company_logo"
+class="form-control"
+accept=".png,.jpg,.jpeg">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Category</label>
+
+<select
+name="category"
+class="form-select">
+
+<option {% if internship.category=="Software Development" %}selected{% endif %}>Software Development</option>
+
+<option {% if internship.category=="AI / Machine Learning" %}selected{% endif %}>AI / Machine Learning</option>
+
+<option {% if internship.category=="Data Science" %}selected{% endif %}>Data Science</option>
+
+<option {% if internship.category=="Web Development" %}selected{% endif %}>Web Development</option>
+
+<option {% if internship.category=="Android" %}selected{% endif %}>Android</option>
+
+<option {% if internship.category=="Cyber Security" %}selected{% endif %}>Cyber Security</option>
+
+<option {% if internship.category=="Cloud Computing" %}selected{% endif %}>Cloud Computing</option>
+
+<option {% if internship.category=="Finance" %}selected{% endif %}>Finance</option>
+
+<option {% if internship.category=="Marketing" %}selected{% endif %}>Marketing</option>
+
+</select>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Internship Type</label>
+
+<select
+name="internship_type"
+class="form-select">
+
+<option {% if internship.internship_type=="Remote" %}selected{% endif %}>Remote</option>
+
+<option {% if internship.internship_type=="Hybrid" %}selected{% endif %}>Hybrid</option>
+
+<option {% if internship.internship_type=="On-site" %}selected{% endif %}>On-site</option>
+
+</select>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Experience</label>
+
+<select
+name="experience"
+class="form-select">
+
+<option {% if internship.experience=="Fresher" %}selected{% endif %}>Fresher</option>
+
+<option {% if internship.experience=="Intermediate" %}selected{% endif %}>Intermediate</option>
+
+<option {% if internship.experience=="Experienced" %}selected{% endif %}>Experienced</option>
+
+</select>
+
+</div>
+
+</div>
+
+<hr>
+
+<!-- Internship Information -->
+
+<h4 class="mb-3 text-primary">
+
+💼 Internship Information
+
+</h4>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label>Title</label>
+
+<input
+type="text"
+name="title"
+class="form-control"
+value="{{ internship.title }}"
+required>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label>Location</label>
+
+<input
+type="text"
+name="location"
+class="form-control"
+value="{{ internship.location }}"
+required>
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Stipend</label>
+
+<input
+type="number"
+name="stipend"
+class="form-control"
+value="{{ internship.stipend }}">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Duration</label>
+
+<input
+type="text"
+name="duration"
+class="form-control"
+value="{{ internship.duration }}">
+
+</div>
+
+<div class="col-md-4 mb-3">
+
+<label>Deadline</label>
+
+<input
+type="date"
+name="last_date"
+class="form-control"
+value="{{ internship.last_date.strftime('%Y-%m-%d') }}"
+required>
+
+</div>
+
+</div>
+
+<div class="mb-3">
+
+<label>Skills</label>
+
+<input
+type="text"
+name="skills"
+class="form-control"
+value="{{ internship.skills }}">
+
+</div>
+
+<hr>
+
+<h4 class="text-primary">
+
+📝 Job Details
+
+</h4>
+
+<div class="mb-3">
+
+<label>Responsibilities</label>
+
+<textarea
+name="responsibilities"
+rows="4"
+class="form-control">{{ internship.responsibilities }}</textarea>
+
+</div>
+
+<div class="mb-3">
+
+<label>Requirements</label>
+
+<textarea
+name="requirements"
+rows="4"
+class="form-control">{{ internship.requirements }}</textarea>
+
+</div>
+
+<div class="mb-3">
+
+<label>Benefits</label>
+
+<textarea
+name="benefits"
+rows="4"
+class="form-control">{{ internship.benefits }}</textarea>
+
+</div>
+
+<div class="mb-3">
+
+<label>Description</label>
+
+<textarea
+name="description"
+rows="5"
+class="form-control">{{ internship.description }}</textarea>
+
+</div>
+
+<div class="d-flex gap-3">
+
+<button
+class="btn btn-warning btn-lg">
+
+💾 Update Internship
+
+</button>
+
+<a
+href="{{ url_for('internships') }}"
+class="btn btn-secondary btn-lg">
+
+⬅ Cancel
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

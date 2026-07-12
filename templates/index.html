@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}
+SRDT Internship Portal
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO ================= -->
+
+<div class="container py-5">
+
+    <div class="row align-items-center">
+
+        <div class="col-lg-6">
+
+            <h1 class="display-3 fw-bold mb-4">
+
+                🚀 Find Your Dream Internship
+
+            </h1>
+
+            <p class="lead">
+
+                A complete Internship Management Portal built with
+                <strong>Python, Flask, MySQL and Bootstrap.</strong>
+
+                Connect students with top companies and simplify internship hiring.
+
+            </p>
+
+            {% if current_user.is_authenticated %}
+
+            <a
+                href="{{ url_for('internships') }}"
+                class="btn btn-primary btn-lg me-3">
+
+                Browse Internships
+
+            </a>
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="btn btn-outline-primary btn-lg">
+
+                Dashboard
+
+            </a>
+
+            {% else %}
+
+            <a
+                href="{{ url_for('register') }}"
+                class="btn btn-primary btn-lg me-3">
+
+                Register Now
+
+            </a>
+
+            <a
+                href="{{ url_for('login') }}"
+                class="btn btn-outline-dark btn-lg">
+
+                Login
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        <div class="col-lg-6 text-center">
+
+            <img
+                src="{{ url_for('static', filename='images/hero.png') }}"
+                width="380"
+                class="img-fluid">
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= STATS ================= -->
+
+<div class="container mt-5">
+
+    <div class="row text-center">
+
+        <div class="col-md-4">
+
+            <div class="card dashboard-card p-4">
+
+                <h2>100+</h2>
+
+                <h5>Students</h5>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card dashboard-card p-4">
+
+                <h2>50+</h2>
+
+                <h5>Companies</h5>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card dashboard-card p-4">
+
+                <h2>250+</h2>
+
+                <h5>Internships</h5>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= FEATURES ================= -->
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-5">
+
+        Why Choose SRDT?
+
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div class="card p-4 text-center">
+
+                <h1>💼</h1>
+
+                <h4>Verified Companies</h4>
+
+                <p>
+
+                    Connect with trusted companies
+                    posting real internship opportunities.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card p-4 text-center">
+
+                <h1>📄</h1>
+
+                <h4>Resume Upload</h4>
+
+                <p>
+
+                    Upload resumes and apply
+                    in a single click.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card p-4 text-center">
+
+                <h1>📊</h1>
+
+                <h4>Dashboard Analytics</h4>
+
+                <p>
+
+                    Track applications,
+                    applicants and internship statistics.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-5">
+
+        How It Works
+
+    </h2>
+
+    <div class="row text-center">
+
+        <div class="col-md-3">
+
+            <h1>1️⃣</h1>
+
+            <h5>Register</h5>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <h1>2️⃣</h1>
+
+            <h5>Create Profile</h5>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <h1>3️⃣</h1>
+
+            <h5>Apply</h5>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <h1>4️⃣</h1>
+
+            <h5>Get Selected</h5>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= CALL TO ACTION ================= -->
+
+<div class="container mt-5 mb-5">
+
+    <div class="card bg-primary text-white p-5 text-center">
+
+        <h2>
+
+            Ready to Start Your Career?
+
+        </h2>
+
+        <p class="mt-3">
+
+            Join hundreds of students and companies
+            using SRDT Internship Portal.
+
+        </p>
+
+        {% if not current_user.is_authenticated %}
+
+        <a
+            href="{{ url_for('register') }}"
+            class="btn btn-light btn-lg mt-3">
+
+            Create Free Account
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
