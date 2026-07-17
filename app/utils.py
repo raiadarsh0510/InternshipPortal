@@ -36,10 +36,10 @@ def send_email(subject: str, recipient: str, body: str, html_body: str = None) -
         )
         return False
 
-    sedefr = current_app.config.get("MAIL_DEFAULT_SENDER")
+    sender = current_app.config.get("MAIL_DEFAULT_SENDER")
     message = EmailMessage()
     message["Subject"] = subject
-    message["From"] = sedefr
+    message["From"] = sender
     message["To"] = recipient_address
     message.set_content(body)
 
