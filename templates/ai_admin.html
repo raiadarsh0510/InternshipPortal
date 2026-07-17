@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Admin Panel
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2 class="fw-bold">
+🤖 AI Assistant Admin Panel
+</h2>
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+
+⬅ Back to Dashboard
+</a>
+
+</div>
+
+<!-- Stats Section -->
+<div class="row g-3 mb-4">
+
+<div class="col-md-4">
+
+<div class="card text-center border-primary">
+
+<div class="card-body">
+
+<h5 class="text-muted">Total Chats</h5>
+
+<h2 class="text-primary fw-bold">
+{{ (chat_history|length) // 2 }}
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card text-center border-success">
+
+<div class="card-body">
+
+<h5 class="text-muted">Total Messages</h5>
+
+<h2 class="text-success fw-bold">
+{{ chat_history|length }}
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card text-center border-info">
+
+<div class="card-body">
+
+<h5 class="text-muted">Active Users</h5>
+
+<h2 class="text-info fw-bold">
+{{ chat_history|map(attribute='user')|unique|list|length }}
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Chat History -->
+<div class="card shadow-lg">
+
+<div class="card-header bg-dark text-white">
+
+<h4 class="mb-0">💬 Recent AI Chat History</h4>
+
+</div>
+
+<div class="card-body">
+
+{% if chat_history %}
+
+<div style="max-height: 600px; overflow-y: auto;">
+
+<table class="table table-hover">
+
+<thead class="table-light">
+
+<tr>
+
+<th>User</th>
+
+<th>Message</th>
+
+<th>Type</th>
+
+<th>Time</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for msg in chat_history %}
+
+<tr>
+
+<td>
+
+<strong>{{ msg.user.name }}</strong>
+
+<br>
+
+<small class="text-muted">{{ msg.user.email }}</small>
+
+</td>
+
+<td>
+
+{{ msg.content[:100] }}{% if msg.content|length > 100 %}...{% endif %}
+
+</td>
+
+<td>
+
+{% if msg.sender == 'user' %}
+
+<span class="badge bg-primary">Student</span>
+
+{% else %}
+
+<span class="badge bg-success">AI Response</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{{ msg.created_at.strftime('%b %d, %H:%M') }}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% else %}
+
+<div class="text-center p-5 text-muted">
+
+<h5>No chat messages yet</h5>
+
+<p>Chat history will appear here once users interact with the AI assistant.</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<!-- Recommendations Section -->
+<div class="card shadow-lg mt-4">
+
+<div class="card-header bg-info text-white">
+
+<h4 class="mb-0">📊 AI Assistant Insights</h4>
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<h5>✅ Usage Tips</h5>
+
+<ul class="list-group list-group-flush">
+
+<li class="list-group-item">Monitor common student queries to improve career support</li>
+
+<li class="list-group-item">Use AI insights to identify skill gaps in applicants</li>
+
+<li class="list-group-item">Track most popular interview prep topics</li>
+
+<li class="list-group-item">Leverage AI responses for internship descriptions</li>
+
+</ul>
+
+</div>
+
+<div class="col-md-6">
+
+<h5>🎯 Features Available</h5>
+
+<ul class="list-group list-group-flush">
+
+<li class="list-group-item">📝 Resume Review & Enhancement</li>
+
+<li class="list-group-item">🎤 Interview Question Generator</li>
+
+<li class="list-group-item">💼 Internship Match Suggestions</li>
+
+<li class="list-group-item">🚀 Career Development Guidance</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

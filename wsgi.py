@@ -9,7 +9,8 @@ from app.models import (
     User,
     Internship,
     Application,
-    SavedInternship
+    SavedInternship,
+    ChatMessage
 )
 
 # Register Routes

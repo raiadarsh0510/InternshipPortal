@@ -4,60 +4,105 @@
 
 {% block content %}
 
-<div class="container mt-5" style="max-width:600px;">
+<div class="container mt-5" style="max-width:700px;">
 
-    <h2 class="text-center mb-4">
-        Student Registration
-    </h2>
+<div class="card shadow-lg border-0">
 
-    <form method="POST" action="/register">
+<div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px 10px 0 0;">
 
-        <div class="mb-3">
-            <label>Name</label>
-            <input
-                type="text"
-                name="name"
-                class="form-control"
-                required>
-        </div>
+<h2 class="mb-0 text-center p-3">
+🚀 Create Your Account
+</h2>
 
-        <div class="mb-3">
-            <label>Email</label>
-            <input
-                type="email"
-                name="email"
-                class="form-control"
-                required>
-        </div>
+</div>
 
-        <div class="mb-3">
-            <label>Password</label>
-            <input
-                type="password"
-                name="password"
-                class="form-control"
-                required>
-        </div>
+<div class="card-body p-4">
 
-        <div class="mb-3">
-            <label>Role</label>
+<p class="text-center text-muted mb-4">
+Join our internship platform and unlock amazing opportunities
+</p>
 
-            <select
-                name="role"
-                class="form-control">
+<form method="POST" action="/register">
 
-                <option>Student</option>
-                <option>Company</option>
+<div class="mb-3">
+<label class="form-label fw-bold">Full Name</label>
+<input
+type="text"
+name="name"
+class="form-control form-control-lg"
+placeholder="Enter your full name"
+required>
+</div>
 
-            </select>
+<div class="mb-3">
+<label class="form-label fw-bold">Email Address</label>
+<input
+type="email"
+name="email"
+class="form-control form-control-lg"
+placeholder="your.email@example.com"
+required>
+<small class="text-muted">We'll send you a verification link</small>
+</div>
 
-        </div>
+<div class="mb-3">
+<label class="form-label fw-bold">Password</label>
+<input
+type="password"
+name="password"
+class="form-control form-control-lg"
+placeholder="Create a strong password"
+required>
+<small class="text-muted d-block mt-2">
+Password must contain:
+<ul style="font-size: 12px; margin-top: 5px;">
+<li>At least 8 characters</li>
+<li>One uppercase letter (A-Z)</li>
+<li>One lowercase letter (a-z)</li>
+<li>One digit (0-9)</li>
+<li>One special character (!@#$%^&*)</li>
+</ul>
+</small>
+</div>
 
-        <button class="btn btn-primary w-100">
-            Register
-        </button>
+<div class="mb-4">
+<label class="form-label fw-bold">Account Type</label>
+<select
+name="role"
+class="form-select form-select-lg"
+required>
+<option value="" disabled selected>Select your role</option>
+<option value="Student">👨‍🎓 Student</option>
+<option value="Company">🏢 Company</option>
+</select>
+</div>
 
-    </form>
+<button type="submit" class="btn btn-primary btn-lg w-100 fw-bold mb-3">
+Create Account
+</button>
+
+<div class="text-center">
+<p class="text-muted">
+Already have an account?
+<a href="{{ url_for('login') }}" class="text-decoration-none fw-bold">
+Login here
+</a>
+</p>
+</div>
+
+</form>
+
+</div>
+
+<div class="card-footer bg-light border-top">
+
+<div class="alert alert-info mb-0">
+<strong>📧 Email Verification:</strong> After registration, check your email for a verification link to activate your account.
+</div>
+
+</div>
+
+</div>
 
 </div>
 

@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.database import db
 from app.models import User
+from app.utils import send_verification_email, confirm_verification_token
 
 
 def init_auth_routes(app):
@@ -17,12 +18,19 @@ def init_auth_routes(app):
 
         if request.method == "POST":
 
-            email = request.form["email"]
+            email = request.form["email"].strip().lower()
             password = request.form["password"]
 
             user = User.query.filter_by(email=email).first()
 
             if user and check_password_hash(user.password, password):
+
+                if not user.email_verified:
+                    flash(
+                        "Please verify your email address before logging in.",
+                        "warning"
+                    )
+                    return render_template("login.html")
 
                 login_user(user, remember=True)
 
@@ -86,13 +94,16 @@ def init_auth_routes(app):
                 name=name,
                 email=email,
                 password=hashed_password,
-                role=role
+                role=role,
+                email_verified=False
             )
 
             db.session.add(new_user)
             db.session.commit()
 
-            flash("Registration Successful! Please Login.", "success")
+            send_verification_email(new_user)
+
+            flash("Registration successful! Please check your email to verify your account.", "success")
 
             return redirect(url_for("login"))
 
@@ -108,4 +119,31 @@ def init_auth_routes(app):
 
         flash("Logged out successfully.", "success")
 
+        return redirect(url_for("login"))
+
+    # ---------------- EMAIL VERIFICATION ---------------- #
+
+    @app.route("/verify_email/<token>")
+    def verify_email(token):
+
+        try:
+            email = confirm_verification_token(token)
+        except Exception:
+            flash("Invalid or expired verification link.", "danger")
+            return redirect(url_for("login"))
+
+        user = User.query.filter_by(email=email).first()
+
+        if user is None:
+            flash("User not found.", "danger")
+            return redirect(url_for("login"))
+
+        if user.email_verified:
+            flash("Email already verified.", "info")
+            return redirect(url_for("login"))
+
+        user.email_verified = True
+        db.session.commit()
+
+        flash("Email verified successfully! You can now login.", "success")
         return redirect(url_for("login"))

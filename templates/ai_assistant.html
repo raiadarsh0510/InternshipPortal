@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Assistant
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="row h-100">
+
+<!-- Chat Section -->
+<div class="col-lg-8">
+
+<div class="card shadow-lg border-0">
+
+<div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+
+<h3 class="mb-0 text-white">
+🤖 AI Assistant for Internships
+</h3>
+
+</div>
+
+<div class="card-body" style="height: 500px; overflow-y: auto; background: #f8f9fa;">
+
+{% if messages %}
+
+{% for message in messages %}
+
+{% if message.sender == 'user' %}
+
+<div class="d-flex mb-3 justify-content-end">
+
+<div class="message-user" style="background: #0d6efd; color: white; padding: 12px 16px; border-radius: 15px; max-width: 70%; word-wrap: break-word;">
+
+{{ message.content }}
+
+</div>
+
+</div>
+
+{% else %}
+
+<div class="d-flex mb-3 justify-content-start">
+
+<div class="message-ai" style="background: #e9ecef; color: #2c3e50; padding: 12px 16px; border-radius: 15px; max-width: 70%; word-wrap: break-word;">
+
+{{ message.content }}
+
+</div>
+
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+{% else %}
+
+<div class="text-center text-muted p-5">
+
+<p>
+💬 No messages yet. Start a conversation with the AI assistant!
+</p>
+
+<p class="small">
+Ask questions about:
+<br>
+• Resume writing & optimization
+<br>
+• Interview preparation
+<br>
+• Internship opportunities
+<br>
+• Professional skills
+</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<!-- Input Form -->
+<div class="card shadow-lg border-0 mt-3">
+
+<form method="POST">
+
+<div class="input-group mb-0">
+
+<textarea
+name="prompt"
+class="form-control"
+placeholder="Ask me anything about internships, resumes, interviews..."
+rows="3"
+required></textarea>
+
+<button class="btn btn-primary" type="submit">
+
+Send ➡️
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- Sidebar: Quick Options -->
+<div class="col-lg-4">
+
+<div class="card shadow-lg border-0 mb-3">
+
+<div class="card-header bg-success text-white">
+
+<h5 class="mb-0">⚡ Quick Prompts</h5>
+
+</div>
+
+<div class="card-body">
+
+<form method="POST">
+
+<input type="hidden" name="prompt" value="Help me write a professional resume summary for an internship position">
+
+<button type="submit" class="btn btn-outline-success btn-sm w-100 mb-2">
+
+📄 Resume Tips
+</button>
+
+</form>
+
+<form method="POST">
+
+<input type="hidden" name="prompt" value="What are the top skills I should have for a tech internship?">
+
+<button type="submit" class="btn btn-outline-success btn-sm w-100 mb-2">
+
+💻 Tech Skills
+</button>
+
+</form>
+
+<form method="POST">
+
+<input type="hidden" name="prompt" value="How should I prepare for an internship interview?">
+
+<button type="submit" class="btn btn-outline-success btn-sm w-100 mb-2">
+
+🎯 Interview Prep
+</button>
+
+</form>
+
+<form method="POST">
+
+<input type="hidden" name="prompt" value="What questions should I ask during an internship interview?">
+
+<button type="submit" class="btn btn-outline-success btn-sm w-100 mb-2">
+
+❓ Questions to Ask
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- Info Card -->
+<div class="card shadow-lg border-0">
+
+<div class="card-header bg-info text-white">
+
+<h5 class="mb-0">ℹ️ How It Works</h5>
+
+</div>
+
+<div class="card-body">
+
+<p><strong>Real-time AI Responses</strong></p>
+
+<p class="small text-muted">
+Get instant feedback and guidance powered by advanced AI models.
+</p>
+
+<hr>
+
+<p><strong>Personalized Advice</strong></p>
+
+<p class="small text-muted">
+Tailored suggestions for your specific needs and interests.
+</p>
+
+<hr>
+
+<p><strong>24/7 Availability</strong></p>
+
+<p class="small text-muted">
+Chat with AI anytime to prepare for internships.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatBody = document.querySelector('[style*="height: 500px"]');
+    if (chatBody) {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+});
+</script>
+
+{% endblock %}

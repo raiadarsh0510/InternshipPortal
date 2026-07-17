@@ -744,4 +744,4 @@ def init_internship_routes(app):
             today=date.today()
         )
 
-    print("✅ All Internship Routes Registered Successfully")               
+    # All Internship Routes Registered Successfully

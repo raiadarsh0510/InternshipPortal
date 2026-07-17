@@ -61,6 +61,19 @@ class User(UserMixin, db.Model):
         lazy=True
     )
 
+    chats = db.relationship(
+        "ChatMessage",
+        backref="user",
+        lazy=True,
+        cascade="all, delete"
+    )
+
+    email_verified = db.Column(
+        db.Boolean,
+        default=False,
+        nullable=False
+    )
+
     def __repr__(self):
 
         return f"<User {self.name}>"
@@ -201,3 +214,29 @@ class SavedInternship(db.Model):
     def __repr__(self):
 
         return f"<SavedInternship {self.id}>"
+
+
+class ChatMessage(db.Model):
+
+    __tablename__ = "chat_messages"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+    sender = db.Column(db.String(20), nullable=False)
+
+    content = db.Column(db.Text, nullable=False)
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    def __repr__(self):
+
+        return f"<ChatMessage {self.id} from {self.sender}>"

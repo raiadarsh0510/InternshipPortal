@@ -6,31 +6,56 @@
 
 <div class="container mt-5" style="max-width:500px;">
 
-    <h2 class="text-center mb-4">Login</h2>
+<div class="card shadow-lg border-0">
 
-    <form method="POST">
+<div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px 10px 0 0;">
 
-        <div class="mb-3">
-            <label>Email</label>
-            <input type="email"
-                   class="form-control"
-                   name="email"
-                   required>
-        </div>
+<h2 class="mb-0 text-center p-3">
+🔐 Login to Your Account
+</h2>
 
-        <div class="mb-3">
-            <label>Password</label>
-            <input type="password"
-                   class="form-control"
-                   name="password"
-                   required>
-        </div>
+</div>
 
-        <button class="btn btn-success w-100">
-            Login
-        </button>
+<div class="card-body p-4">
 
-    </form>
+<form method="POST">
+
+<div class="mb-3">
+<label class="form-label fw-bold">Email Address</label>
+<input type="email"
+class="form-control form-control-lg"
+name="email"
+placeholder="your.email@example.com"
+required>
+</div>
+
+<div class="mb-4">
+<label class="form-label fw-bold">Password</label>
+<input type="password"
+class="form-control form-control-lg"
+name="password"
+placeholder="Enter your password"
+required>
+</div>
+
+<button class="btn btn-primary btn-lg w-100 fw-bold mb-3">
+Login
+</button>
+
+<div class="text-center">
+<p class="text-muted">
+Don't have an account?
+<a href="{{ url_for('register') }}" class="text-decoration-none fw-bold">
+Register here
+</a>
+</p>
+</div>
+
+</form>
+
+</div>
+
+</div>
 
 </div>
 
