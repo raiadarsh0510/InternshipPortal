@@ -12,7 +12,8 @@ from app.models.interview import InterviewSchedule
 from app.models.academic import AcademicEvaluation
 from app.models.system import Announcement, Notification
 
-app = create_app("dev")
+env = os.getenv("FLASK_ENV", "prod" if os.getenv("RENDER") or os.getenv("PORT") else "dev")
+app = create_app(env)
 
 def seed():
     with app.app_context():

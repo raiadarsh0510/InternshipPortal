@@ -1,20 +1,26 @@
-services:
-  - type: web
-    name: teleportal
-    runtime: python
-    region: oregon
-    plan: free
-    branch: main
-    buildCommand: "pip install -r requirements.txt && python seeds/seed_data.py"
-    startCommand: "gunicorn wsgi:app"
-    healthCheckPath: /
-    autoDeploy: true
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
-      - key: FLASK_ENV
-        value: prod
-      - key: SECRET_KEY
-        generateValue: true
+# Exported from Render on 2026-09-13T19:42:04Z
+version: "1"
+projects:
+- name: TelePortal
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: teleportal
+      runtime: python
+      repo: https://github.com/raiadarsh0510/InternshipPortal
+      plan: free
+      envVars:
       - key: REDIS_URL
         value: memory://
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: prod
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      region: oregon
+      buildCommand: pip install -r requirements.txt && python seeds/seed_data.py
+      startCommand: gunicorn wsgi:app
+      healthCheckPath: /
+      autoDeployTrigger: commit
