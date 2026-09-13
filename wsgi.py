@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_login import LoginManager
 
@@ -32,6 +33,16 @@ app.secret_key = app.config.get(
     "SECRET_KEY",
     "internship_portal_secret_key"
 )
+
+# Ensure required directories exist
+for folder in [
+    os.path.join(app.root_path, "instance"),
+    app.config.get("PROFILE_UPLOAD_FOLDER"),
+    app.config.get("COMPANY_LOGO_FOLDER"),
+    app.config.get("RESUME_UPLOAD_FOLDER")
+]:
+    if folder:
+        os.makedirs(folder, exist_ok=True)
 
 # ==========================================
 # Initialize Extensions

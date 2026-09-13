@@ -1,4 +1,6 @@
-﻿import os
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
@@ -14,10 +16,18 @@ class Config:
     # ==========================================
     # Database
     # ==========================================
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL",
-        "sqlite:///internship_portal.db"
-    )
+    _raw_db_url = os.getenv("DATABASE_URL")
+    if _raw_db_url:
+        # Normalize MySQL driver for PyMySQL
+        if _raw_db_url.startswith("mysql://"):
+            _raw_db_url = _raw_db_url.replace("mysql://", "mysql+pymysql://", 1)
+        # Normalize Postgres scheme for modern SQLAlchemy
+        elif _raw_db_url.startswith("postgres://"):
+            _raw_db_url = _raw_db_url.replace("postgres://", "postgresql://", 1)
+        SQLALCHEMY_DATABASE_URI = _raw_db_url
+    else:
+        # Fallback to local SQLite instance db
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(basedir, 'instance', 'internship_portal.db')}"
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -42,11 +52,11 @@ class Config:
     # ==========================================
     # Upload Folders
     # ==========================================
-    PROFILE_UPLOAD_FOLDER = "static/images/profiles"
+    PROFILE_UPLOAD_FOLDER = os.path.join(basedir, "static", "images", "profiles")
 
-    COMPANY_LOGO_FOLDER = "static/images/company_logos"
+    COMPANY_LOGO_FOLDER = os.path.join(basedir, "static", "images", "company_logos")
 
-    RESUME_UPLOAD_FOLDER = "static/resumes"
+    RESUME_UPLOAD_FOLDER = os.path.join(basedir, "static", "resumes")
 
     # ==========================================
     # Upload Restrictions

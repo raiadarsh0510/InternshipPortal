@@ -25,7 +25,8 @@ def init_auth_routes(app):
 
             if user and check_password_hash(user.password, password):
 
-                if not user.email_verified:
+                mail_configured = bool(app.config.get("MAIL_SERVER") and app.config.get("MAIL_USERNAME"))
+                if mail_configured and not user.email_verified:
                     flash(
                         "Please verify your email address before logging in.",
                         "warning"
@@ -90,20 +91,28 @@ def init_auth_routes(app):
 
             hashed_password = generate_password_hash(password)
 
+            mail_configured = bool(app.config.get("MAIL_SERVER") and app.config.get("MAIL_USERNAME"))
             new_user = User(
                 name=name,
                 email=email,
                 password=hashed_password,
                 role=role,
-                email_verified=False
+                email_verified=False if mail_configured else True
             )
 
             db.session.add(new_user)
             db.session.commit()
 
-            send_verification_email(new_user)
-
-            flash("Registration successful! Please check your email to verify your account.", "success")
+            if mail_configured:
+                sent = send_verification_email(new_user)
+                if sent:
+                    flash("Registration successful! Please check your email to verify your account.", "success")
+                else:
+                    new_user.email_verified = True
+                    db.session.commit()
+                    flash("Registration successful! You can now login.", "success")
+            else:
+                flash("Registration successful! You can now login.", "success")
 
             return redirect(url_for("login"))
 

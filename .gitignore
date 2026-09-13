@@ -1,4 +1,30 @@
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+
+# Environment & local settings
+.env
 .venv/
 venv/
+ENV/
+
+# Database & instance folder
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploaded user files
+static/resumes/*
+!static/resumes/.gitkeep
+static/images/profiles/*
+!static/images/profiles/.gitkeep
+!static/images/profiles/default_profile.png
+!static/images/profiles/Badal_Profile.png
+!static/images/profiles/images.jpg
+!static/images/profiles/images_1.jpg
+
+# OS files
+.DS_Store
+Thumbs.db
