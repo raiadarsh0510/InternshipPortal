@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}My Applications{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="glass-panel p-4 p-md-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <div>
+        <h3 class="fw-bold mb-1">My Internship Applications</h3>
+        <p class="text-muted small mb-0">Track real-time candidate progress and recruiter response SLAs.</p>
+      </div>
+      <a href="{{ url_for('internship.list_internships') }}" class="btn btn-sm btn-teleportal"><i class="bi bi-search me-1"></i>Explore More Roles</a>
+    </div>
+
+    {% if applications %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr class="text-muted small border-bottom">
+              <th>Role & Company</th>
+              <th>Applied Date</th>
+              <th>Match Score</th>
+              <th>Current Stage</th>
+              <th>Action / Interview</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in applications %}
+              <tr class="border-bottom">
+                <td>
+                  <a href="{{ url_for('internship.detail', id=a.internship_rel.id) }}" class="fw-bold text-decoration-none text-primary">{{ a.internship_rel.title }}</a>
+                  <div class="small text-muted">{{ a.internship_rel.company_user.company_profile.company_name if a.internship_rel.company_user and a.internship_rel.company_user.company_profile else 'Verified Partner' }} • {{ a.internship_rel.location }}</div>
+                </td>
+                <td class="small text-muted">{{ a.applied_at.strftime('%b %d, %Y') }}</td>
+                <td>
+                  <span class="badge bg-primary-subtle text-primary fw-semibold">{{ a.match_score }}% Match</span>
+                </td>
+                <td>
+                  {% if a.status == 'applied' %}
+                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Under Review</span>
+                  {% elif a.status == 'shortlisted' %}
+                    <span class="badge bg-success-subtle text-success text-uppercase">Shortlisted</span>
+                  {% elif a.status == 'interview_scheduled' %}
+                    <span class="badge bg-warning-subtle text-warning text-uppercase">Interview Scheduled</span>
+                  {% elif a.status == 'accepted' %}
+                    <span class="badge bg-success text-white text-uppercase">Offer Extended</span>
+                  {% else %}
+                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{ a.status }}</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if a.interviews.count() > 0 %}
+                    <a href="{{ a.interviews.first().meeting_link }}" target="_blank" class="btn btn-sm btn-success py-1"><i class="bi bi-camera-video me-1"></i>Join Meet</a>
+                  {% else %}
+                    <span class="small text-muted">Awaiting Recruiter SLA</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-inbox fs-1 text-muted"></i>
+        <h5 class="fw-bold mt-2">No Applications Submitted</h5>
+        <p class="text-muted small">Explore curated internships and apply with your verified profile.</p>
+        <a href="{{ url_for('internship.list_internships') }}" class="btn btn-teleportal btn-sm">Explore Openings</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

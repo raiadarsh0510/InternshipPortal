@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Sign In{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="glass-panel p-4 p-md-5">
+        <div class="text-center mb-4">
+          <h3 class="fw-bold text-primary">Sign In</h3>
+          <p class="text-muted small">Access your personalized TELEPORTAL dashboard</p>
+        </div>
+        <form method="POST" action="{{ url_for('auth.login') }}">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Email Address</label>
+            {{ form.email(class="form-control", placeholder="name@domain.com") }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Password</label>
+            {{ form.password(class="form-control", placeholder="••••••••") }}
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+              {{ form.remember(class="form-check-input") }}
+              <label class="form-check-label small text-muted">Remember me</label>
+            </div>
+            <a href="#" class="small text-decoration-none">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-teleportal w-100 py-2">Sign In to Account</button>
+        </form>
+        <div class="text-center mt-4 border-top pt-3">
+          <span class="small text-muted">New to TELEPORTAL? </span>
+          <a href="{{ url_for('auth.register') }}" class="small fw-semibold text-primary">Create an account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

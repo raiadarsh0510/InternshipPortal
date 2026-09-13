@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}AI Innovation Hub{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 mb-2"><i class="bi bi-stars me-1"></i>Generative AI Career Acceleration Suite</span>
+    <h2 class="fw-extrabold display-5">Enterprise AI Career Hub</h2>
+    <p class="text-muted mx-auto" style="max-width: 640px;">
+      Harness state-of-the-art AI models to audit your resume for enterprise ATS filters, simulate real technical and HR interviews, generate custom cover letters, and plot your 4-week learning roadmap.
+    </p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Card 1: ATS Resume Scorer -->
+    <div class="col-md-6 col-lg-3">
+      <div class="glass-panel p-4 h-100 d-flex flex-column text-center">
+        <div class="fs-1 text-primary mb-3"><i class="bi bi-file-earmark-check-fill"></i></div>
+        <h5 class="fw-bold mb-2">AI ATS Resume Scorer</h5>
+        <p class="small text-muted flex-grow-1">Audit your resume for parseability, keyword density, section headers, and get a predictive score (0-100).</p>
+        <a href="{{ url_for('ai.resume_analyzer') }}" class="btn btn-outline-primary btn-sm mt-3">Analyze Resume</a>
+      </div>
+    </div>
+
+    <!-- Card 2: AI Mock Interviewer -->
+    <div class="col-md-6 col-lg-3">
+      <div class="glass-panel p-4 h-100 d-flex flex-column text-center">
+        <div class="fs-1 text-success mb-3"><i class="bi bi-mic-fill"></i></div>
+        <h5 class="fw-bold mb-2">Mock Interview Room</h5>
+        <p class="small text-muted flex-grow-1">Simulate rigorous Technical and HR interview rounds with live question prompts and instant feedback.</p>
+        <a href="{{ url_for('ai.mock_interview') }}" class="btn btn-outline-success btn-sm mt-3">Start Interview</a>
+      </div>
+    </div>
+
+    <!-- Card 3: Skill Gap & Learning Roadmap -->
+    <div class="col-md-6 col-lg-3">
+      <div class="glass-panel p-4 h-100 d-flex flex-column text-center">
+        <div class="fs-1 text-warning mb-3"><i class="bi bi-diagram-3-fill"></i></div>
+        <h5 class="fw-bold mb-2">Skill Gap Roadmap</h5>
+        <p class="small text-muted flex-grow-1">Compare your current stack against target company benchmarks and generate a 4-week learning curriculum.</p>
+        <a href="{{ url_for('ai.skill_gap') }}" class="btn btn-outline-warning btn-sm mt-3">Generate Path</a>
+      </div>
+    </div>
+
+    <!-- Card 4: AI Cover Letter Generator -->
+    <div class="col-md-6 col-lg-3">
+      <div class="glass-panel p-4 h-100 d-flex flex-column text-center">
+        <div class="fs-1 text-info mb-3"><i class="bi bi-envelope-paper-fill"></i></div>
+        <h5 class="fw-bold mb-2">Cover Letter Builder</h5>
+        <p class="small text-muted flex-grow-1">Instantly craft tailored, high-converting cover letters matching your skills directly to the role requirements.</p>
+        <a href="{{ url_for('ai.cover_letter') }}" class="btn btn-outline-info btn-sm mt-3">Draft Letter</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

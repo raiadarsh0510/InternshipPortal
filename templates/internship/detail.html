@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}{{ internship.title }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="glass-panel p-4 p-md-5 mb-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h3 class="fw-bold mb-1">{{ internship.title }}</h3>
+            <div class="text-muted small"><i class="bi bi-building me-1"></i>{{ internship.company_user.company_profile.company_name if internship.company_user and internship.company_user.company_profile else 'Verified Partner' }} • <i class="bi bi-geo-alt me-1"></i>{{ internship.location }}</div>
+          </div>
+          <span class="fs-4 fw-bold text-success">₹{{ "{:,}".format(internship.stipend_amount) }}<span class="fs-6 text-muted">/mo</span></span>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <span class="badge bg-primary-subtle text-primary">{{ internship.internship_type }}</span>
+          <span class="badge bg-info-subtle text-info">{{ internship.duration_weeks }} Weeks</span>
+          <span class="badge bg-warning-subtle text-warning">{{ internship.experience_level }}</span>
+          <span class="badge badge-nep">4 NEP Credits</span>
+          <span class="badge badge-sla">48-Hr Review Guarantee</span>
+        </div>
+
+        <h5 class="fw-bold border-bottom pb-2">About the Role</h5>
+        <p class="text-muted">{{ internship.description }}</p>
+
+        {% if internship.responsibilities %}
+          <h5 class="fw-bold border-bottom pb-2 mt-4">Key Responsibilities</h5>
+          <p class="text-muted">{{ internship.responsibilities }}</p>
+        {% endif %}
+
+        {% if internship.requirements %}
+          <h5 class="fw-bold border-bottom pb-2 mt-4">Requirements & Qualifications</h5>
+          <p class="text-muted">{{ internship.requirements }}</p>
+        {% endif %}
+
+        <h5 class="fw-bold border-bottom pb-2 mt-4">Required Skills</h5>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          {% for s in internship.get_skills_list() %}
+            <span class="badge bg-light text-dark border fs-6">{{ s }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Apply & AI Match Sidebar -->
+    <div class="col-lg-4">
+      <div class="glass-panel p-4 mb-4 text-center">
+        {% if current_user.is_authenticated and current_user.is_student %}
+          <div class="mb-3">
+            <div class="small text-muted fw-semibold mb-1">Your Profile Match Score</div>
+            <div class="fs-1 fw-bold text-primary">{{ match_score }}%</div>
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: {{ match_score }}%;"></div>
+            </div>
+          </div>
+          {% if has_applied %}
+            <button class="btn btn-success w-100 py-2" disabled><i class="bi bi-check-circle me-1"></i>Application Submitted</button>
+          {% else %}
+            <button class="btn btn-teleportal w-100 py-2 mb-2" data-bs-toggle="modal" data-bs-target="#applyModal">Apply Now</button>
+          {% endif %}
+        {% else %}
+          <p class="text-muted small">Sign in as a student to check your AI skill match and apply.</p>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-teleportal w-100">Sign In to Apply</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Apply Modal -->
+<div class="modal fade" id="applyModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-panel">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title fw-bold">Apply for {{ internship.title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('internship.apply', id=internship.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Cover Note / Why you are a great fit</label>
+            <textarea name="cover_letter" class="form-control" rows="4" placeholder="Highlight relevant projects, GitHub links, and why this role excites you..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-sm btn-teleportal">Submit Verified Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

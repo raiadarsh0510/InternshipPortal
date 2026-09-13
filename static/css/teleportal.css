@@ -1,0 +1,108 @@
+/* ========================================================
+   TELEPORTAL - Modern Glassmorphism & Enterprise Styling
+   ======================================================== */
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  --dark-bg: #0f172a;
+  --dark-card: rgba(30, 41, 59, 0.7);
+  --dark-border: rgba(255, 255, 255, 0.1);
+  --light-bg: #f8fafc;
+  --light-card: rgba(255, 255, 255, 0.85);
+  --light-border: rgba(0, 0, 0, 0.08);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--light-bg);
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+  background-color: var(--dark-bg);
+  color: #f1f5f9;
+}
+
+/* Glassmorphism Containers */
+.glass-panel {
+  background: var(--light-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--light-border);
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.dark-mode .glass-panel {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.12);
+}
+
+/* Navbar */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--light-border);
+}
+
+body.dark-mode .glass-nav {
+  background: rgba(15, 23, 42, 0.88);
+  border-bottom: 1px solid var(--dark-border);
+}
+
+/* Badges & Trust Accents */
+.badge-nep {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.badge-sla {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+/* Gradient Buttons */
+.btn-teleportal {
+  background: var(--primary-gradient);
+  color: white !important;
+  border: none;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+  transition: all 0.2s ease;
+}
+
+.btn-teleportal:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+/* AI Copilot Float */
+.ai-copilot-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1050;
+}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Next Generation AI Internship Platform{% endblock %}
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 text-center position-relative overflow-hidden">
+  <div class="container py-lg-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <span class="badge badge-nep mb-3 px-3 py-2"><i class="bi bi-patch-check-fill me-1"></i>Official NEP 2020 & AICTE Credit Integration</span>
+        <h1 class="display-4 fw-extrabold text-dark tracking-tight mb-3">
+          Discover Verified Internships Powered by <span class="text-primary">Generative AI</span>
+        </h1>
+        <p class="lead text-muted mb-4 mx-auto" style="max-width: 720px;">
+          Eliminate resume black holes. Connect directly with enterprise employers, build verified proof-of-work via micro-bounties, and map your industry training into certified academic degree credits.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mb-5">
+          <a href="{{ url_for('internship.list_internships') }}" class="btn btn-teleportal btn-lg px-4"><i class="bi bi-search me-2"></i>Explore Internships</a>
+          <a href="{{ url_for('internship.micro_bounties') }}" class="btn btn-outline-primary btn-lg px-4"><i class="bi bi-trophy me-2"></i>Micro-Bounties</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Statistics Bar -->
+    <div class="row g-3 justify-content-center">
+      <div class="col-6 col-md-3">
+        <div class="glass-panel p-3">
+          <div class="fs-3 fw-bold text-primary">{{ stats.internships }}+</div>
+          <div class="small text-muted">Active Openings</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="glass-panel p-3">
+          <div class="fs-3 fw-bold text-success">{{ stats.companies }}+</div>
+          <div class="small text-muted">Vetted Companies</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="glass-panel p-3">
+          <div class="fs-3 fw-bold text-warning">{{ stats.bounties }}+</div>
+          <div class="small text-muted">Proof-of-Work Bounties</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="glass-panel p-3">
+          <div class="fs-3 fw-bold text-info">{{ stats.satisfaction }}</div>
+          <div class="small text-muted">Student Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Roles -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h3 class="fw-bold mb-1">Featured High-Stipend Openings</h3>
+        <p class="text-muted small mb-0">Verified roles with guaranteed response SLAs and PPO conversion opportunities.</p>
+      </div>
+      <a href="{{ url_for('internship.list_internships') }}" class="btn btn-sm btn-outline-primary fw-semibold">View All</a>
+    </div>
+
+    <div class="row g-4">
+      {% for f in featured %}
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-panel p-4 h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="badge bg-primary-subtle text-primary border">{{ f.internship_type }}</span>
+              <span class="badge bg-success-subtle text-success fw-bold">₹{{ "{:,}".format(f.stipend_amount) }}/mo</span>
+            </div>
+            <h5 class="fw-bold mb-1"><a href="{{ url_for('internship.detail', id=f.id) }}" class="text-dark text-decoration-none">{{ f.title }}</a></h5>
+            <div class="small text-muted mb-3"><i class="bi bi-geo-alt me-1"></i>{{ f.location }} • {{ f.duration_weeks }} Weeks</div>
+            <p class="small text-muted flex-grow-1 line-clamp-3">{{ f.description[:130] }}...</p>
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+              <span class="badge badge-sla">48h SLA Review</span>
+              <a href="{{ url_for('internship.detail', id=f.id) }}" class="btn btn-sm btn-outline-primary">View Role</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

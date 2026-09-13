@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Control Center{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Top Banner -->
+  <div class="glass-card p-4 mb-4 border-start border-4 border-primary">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-1 mb-2">SYSTEM ADMINISTRATION</span>
+        <h2 class="fw-bold mb-1"><i class="bi bi-shield-lock-fill text-primary me-2"></i>Platform Control Center</h2>
+        <p class="text-muted mb-0">Real-time governance, telemetry, user compliance, and NEP 2020 verification.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+          <i class="bi bi-people me-1"></i>Manage Users
+        </a>
+        <a href="{{ url_for('admin.manage_internships') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+          <i class="bi bi-briefcase me-1"></i>Moderate Internships
+        </a>
+        <a href="{{ url_for('admin.announcements') }}" class="btn btn-teleportal btn-sm px-3">
+          <i class="bi bi-megaphone me-1"></i>Broadcast
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Total Users</div>
+        <div class="fs-2 fw-bold text-primary my-1">{{ stats.total_users }}</div>
+        <div class="small text-success"><i class="bi bi-arrow-up-short"></i>Platform active</div>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Students</div>
+        <div class="fs-2 fw-bold text-info my-1">{{ stats.students }}</div>
+        <div class="small text-muted">Talent pool</div>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Employers</div>
+        <div class="fs-2 fw-bold text-purple my-1">{{ stats.companies }}</div>
+        <div class="small text-muted">Verified orgs</div>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+      <div class="glass-card p-3 text-center h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Internships</div>
+        <div class="fs-2 fw-bold text-warning my-1">{{ stats.internships }}</div>
+        <div class="small text-muted">Active opportunities</div>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+      <div class="glass-card p-3 text-center h-100">
+        <div class="text-muted small fw-semibold text-uppercase">Applications</div>
+        <div class="fs-2 fw-bold text-success my-1">{{ stats.applications }}</div>
+        <div class="small text-muted">SLA tracked</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics and Chart Section -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-8">
+      <div class="glass-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0"><i class="bi bi-graph-up text-primary me-2"></i>Platform Distribution Telemetry</h5>
+          <span class="badge bg-light text-muted border">Live metrics</span>
+        </div>
+        <canvas id="platformMetricsChart" height="130"></canvas>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="glass-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0"><i class="bi bi-pie-chart text-purple me-2"></i>User Demographics</h5>
+        </div>
+        <canvas id="userRatioChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Users & Announcements Row -->
+  <div class="row g-4 mb-4">
+    <!-- User Registrations -->
+    <div class="col-lg-7">
+      <div class="glass-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0"><i class="bi bi-person-plus text-primary me-2"></i>Recent Registrations</h5>
+          <a href="{{ url_for('admin.manage_users') }}" class="small text-primary fw-semibold text-decoration-none">View All Users <i class="bi bi-chevron-right"></i></a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr class="small text-muted">
+                <th>User</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in recent_users %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                      {{ u.name[:1].upper() }}
+                    </div>
+                    <div>
+                      <div class="fw-semibold small">{{ u.name }}</div>
+                      <div class="text-muted" style="font-size: 0.75rem;">{{ u.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge {% if u.is_student %}badge-nep{% elif u.is_company %}bg-info-subtle text-info{% else %}bg-purple-subtle text-purple{% endif %}">
+                    {{ u.role.capitalize() }}
+                  </span>
+                </td>
+                <td>
+                  {% if u.is_active %}
+                    <span class="badge bg-success-subtle text-success">Active</span>
+                  {% else %}
+                    <span class="badge bg-danger-subtle text-danger">Suspended</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if u.id != current_user.id %}
+                    <form method="POST" action="{{ url_for('admin.toggle_user_status', id=u.id) }}" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-xs {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %} btn-sm py-0 px-2" style="font-size: 0.75rem;">
+                        {% if u.is_active %}Suspend{% else %}Activate{% endif %}
+                      </button>
+                    </form>
+                  {% else %}
+                    <span class="text-muted small">You</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Broadcast Announcements -->
+    <div class="col-lg-5">
+      <div class="glass-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0"><i class="bi bi-broadcast text-warning me-2"></i>Active Broadcasts</h5>
+          <a href="{{ url_for('admin.announcements') }}" class="small text-primary fw-semibold text-decoration-none">Manage <i class="bi bi-chevron-right"></i></a>
+        </div>
+        {% if announcements %}
+          <div class="d-flex flex-column gap-2">
+            {% for a in announcements %}
+            <div class="p-3 rounded border bg-white-50">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <span class="fw-bold small text-dark">{{ a.title }}</span>
+                <span class="badge bg-secondary-subtle text-secondary small text-uppercase" style="font-size: 0.7rem;">Target: {{ a.target_role }}</span>
+              </div>
+              <p class="text-muted small mb-1">{{ a.content[:100] }}{% if a.content|length > 100 %}...{% endif %}</p>
+              <div class="text-muted" style="font-size: 0.7rem;"><i class="bi bi-clock me-1"></i>{{ a.created_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-muted">
+            <i class="bi bi-megaphone fs-3 d-block mb-2 text-secondary"></i>
+            <p class="small mb-0">No active system announcements.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Log Feed -->
+  <div class="glass-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0"><i class="bi bi-shield-check text-success me-2"></i>System Security Audit Trail</h5>
+      <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">Full Audit Logs</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr class="small text-muted">
+            <th>Timestamp</th>
+            <th>Action</th>
+            <th>Target Type</th>
+            <th>Target ID</th>
+            <th>Origin IP</th>
+            <th>Audit Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in recent_logs %}
+          <tr>
+            <td class="small text-muted">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td><span class="badge bg-primary-subtle text-primary fw-mono">{{ log.action }}</span></td>
+            <td class="small">{{ log.entity_type or 'General' }}</td>
+            <td class="small text-muted">#{{ log.entity_id or '-' }}</td>
+            <td class="small text-muted font-monospace">{{ log.ip_address or '127.0.0.1' }}</td>
+            <td class="small text-truncate" style="max-width: 260px;" title="{{ log.details }}">{{ log.details or '-' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Platform Metrics Chart
+    const ctxMetrics = document.getElementById('platformMetricsChart');
+    if (ctxMetrics) {
+      new Chart(ctxMetrics, {
+        type: 'bar',
+        data: {
+          labels: ['Students', 'Employers', 'Internships', 'Applications'],
+          datasets: [{
+            label: 'Platform Count',
+            data: [{{ stats.students }}, {{ stats.companies }}, {{ stats.internships }}, {{ stats.applications }}],
+            backgroundColor: ['#4338ca', '#06b6d4', '#f59e0b', '#10b981'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } }
+        }
+      });
+    }
+
+    // User Ratio Chart
+    const ctxRatio = document.getElementById('userRatioChart');
+    if (ctxRatio) {
+      new Chart(ctxRatio, {
+        type: 'doughnut',
+        data: {
+          labels: ['Students', 'Employers'],
+          datasets: [{
+            data: [{{ stats.students }}, {{ stats.companies }}],
+            backgroundColor: ['#4f46e5', '#06b6d4'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' }
+          },
+          cutout: '70%'
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

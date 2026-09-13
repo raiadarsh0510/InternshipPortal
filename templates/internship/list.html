@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Browse Internships{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4">
+    <!-- Filter Sidebar -->
+    <div class="col-lg-3">
+      <div class="glass-panel p-4 sticky-top" style="top: 80px;">
+        <h5 class="fw-bold mb-3"><i class="bi bi-funnel me-2"></i>Filter Roles</h5>
+        <form method="GET" action="{{ url_for('internship.list_internships') }}">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Search Keywords</label>
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="Title, skills, keywords..." value="{{ filters.q or '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Category</label>
+            <select name="category" class="form-select form-select-sm">
+              <option value="">All Categories</option>
+              {% for c in categories %}
+                <option value="{{ c.id }}" {% if filters.category == c.id %}selected{% endif %}>{{ c.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">City / Location</label>
+            <input type="text" name="location" class="form-control form-control-sm" placeholder="e.g. Remote, Bengaluru" value="{{ filters.location or '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Work Mode</label>
+            <select name="type" class="form-select form-select-sm">
+              <option value="">All Modes</option>
+              <option value="Virtual" {% if filters.type == 'Virtual' %}selected{% endif %}>Remote / Virtual</option>
+              <option value="On-site" {% if filters.type == 'On-site' %}selected{% endif %}>On-site</option>
+              <option value="Hybrid" {% if filters.type == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-teleportal w-100 btn-sm">Apply Filters</button>
+          <a href="{{ url_for('internship.list_internships') }}" class="btn btn-outline-secondary w-100 btn-sm mt-2">Reset</a>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main List -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">Explore Verified Internships</h4>
+        <span class="text-muted small">{{ pagination.total }} openings available</span>
+      </div>
+
+      <div class="row g-3">
+        {% for item in internships %}
+          <div class="col-md-6">
+            <div class="glass-panel p-4 h-100 d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge bg-primary-subtle text-primary border">{{ item.internship_type }}</span>
+                <span class="fw-bold text-success">₹{{ "{:,}".format(item.stipend_amount) }}/mo</span>
+              </div>
+              <h5 class="fw-bold mb-1"><a href="{{ url_for('internship.detail', id=item.id) }}" class="text-dark text-decoration-none">{{ item.title }}</a></h5>
+              <div class="small text-muted mb-2"><i class="bi bi-geo-alt me-1"></i>{{ item.location }} • {{ item.duration_weeks }} Weeks</div>
+              <p class="small text-muted flex-grow-1">{{ item.description[:110] }}...</p>
+              <div class="d-flex flex-wrap gap-1 mb-3">
+                {% for s in item.get_skills_list()[:3] %}
+                  <span class="badge bg-light text-secondary border small">{{ s }}</span>
+                {% endfor %}
+              </div>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="badge badge-nep">NEP Credit</span>
+                <a href="{{ url_for('internship.detail', id=item.id) }}" class="btn btn-sm btn-outline-primary">Details & Apply</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

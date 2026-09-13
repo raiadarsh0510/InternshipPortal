@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}AI Cover Letter Builder{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="glass-panel p-4 p-md-5">
+        <h3 class="fw-bold text-primary mb-1"><i class="bi bi-envelope-paper me-2"></i>Tailored Cover Letter Generator</h3>
+        <p class="text-muted small mb-4">Generate compelling, job-specific cover letters in seconds.</p>
+
+        <form method="POST" action="{{ url_for('ai.cover_letter') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Company Name</label>
+              <input type="text" name="company_name" class="form-control" placeholder="e.g. Nexus AI" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Internship Role Title</label>
+              <input type="text" name="internship_title" class="form-control" placeholder="e.g. Machine Learning Intern" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Your Core Skills to Highlight</label>
+              <input type="text" name="skills" class="form-control" placeholder="Python, PyTorch, Transformers" value="{{ current_user.student_profile.skills if current_user.student_profile else '' }}" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Role Description Highlights (Optional)</label>
+              <textarea name="description" class="form-control" rows="3" placeholder="Paste key bullet points from the job description..."></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-teleportal px-4 py-2">Generate Cover Letter</button>
+        </form>
+
+        {% if letter %}
+          <hr class="my-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold mb-0">Generated Cover Letter</h5>
+            <button class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('letterText').innerText); alert('Copied to clipboard!');"><i class="bi bi-clipboard me-1"></i>Copy</button>
+          </div>
+          <div id="letterText" class="p-4 bg-light rounded border text-muted small" style="white-space: pre-wrap;">{{ letter }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

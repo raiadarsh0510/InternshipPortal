@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Moderate Internships{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-1 small">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}" class="text-decoration-none">Admin</a></li>
+            <li class="breadcrumb-item active">Internships</li>
+          </ol>
+        </nav>
+        <h3 class="fw-bold mb-1"><i class="bi bi-briefcase-fill text-primary me-2"></i>Internship Moderation Hub</h3>
+        <p class="text-muted mb-0">Review posted opportunities, verify employer compliance, and manage active listings.</p>
+      </div>
+      <div>
+        <a href="{{ url_for('internship.list_internships') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3" target="_blank">
+          <i class="bi bi-box-arrow-up-right me-1"></i>View Live Board
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Filter -->
+  <div class="glass-card p-3 mb-4">
+    <div class="row align-items-center g-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" id="internshipSearchInput" class="form-control border-start-0" placeholder="Filter by title, company, or skills...">
+        </div>
+      </div>
+      <div class="col-md-6 text-md-end text-muted small">
+        Total <span class="fw-bold text-dark" id="internshipCount">{{ internships|length }}</span> opportunities on platform
+      </div>
+    </div>
+  </div>
+
+  <!-- Internships Table -->
+  <div class="glass-card p-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="internshipsTable">
+        <thead class="table-light">
+          <tr class="small text-muted">
+            <th>ID</th>
+            <th>Opportunity & Company</th>
+            <th>Type / Work Mode</th>
+            <th>Stipend</th>
+            <th>Applicants</th>
+            <th>Status</th>
+            <th class="text-end">Moderation</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in internships %}
+          <tr class="internship-row">
+            <td class="small text-muted font-monospace">#{{ item.id }}</td>
+            <td>
+              <div class="fw-bold text-dark search-target">{{ item.title }}</div>
+              <div class="small text-muted search-target">
+                <i class="bi bi-building me-1"></i>{{ item.company.name if item.company else 'Organization' }}
+                {% if item.category %} &bull; <span class="badge bg-light text-secondary border">{{ item.category.name }}</span>{% endif %}
+              </div>
+            </td>
+            <td>
+              <span class="badge {% if item.work_type == 'remote' %}bg-success-subtle text-success{% elif item.work_type == 'hybrid' %}bg-primary-subtle text-primary{% else %}bg-secondary-subtle text-secondary{% endif %} text-uppercase" style="font-size: 0.75rem;">
+                {{ item.work_type }}
+              </span>
+              <div class="small text-muted mt-1"><i class="bi bi-geo-alt me-1"></i>{{ item.location or 'Flexible' }}</div>
+            </td>
+            <td class="fw-semibold text-dark">
+              {% if item.is_unpaid %}
+                <span class="text-muted small">Unpaid</span>
+              {% else %}
+                ₹{{ "{:,.0f}".format(item.stipend_amount) }}/mo
+              {% endif %}
+            </td>
+            <td>
+              <span class="badge rounded-pill bg-light text-dark border px-2 py-1">
+                <i class="bi bi-people me-1"></i>{{ item.applications|length }}
+              </span>
+            </td>
+            <td>
+              {% if item.is_active %}
+                <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle-fill me-1"></i>Active</span>
+              {% else %}
+                <span class="badge bg-warning-subtle text-warning"><i class="bi bi-pause-circle-fill me-1"></i>Archived</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <div class="d-flex justify-content-end gap-2">
+                <a href="{{ url_for('internship.internship_detail', id=item.id) }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="View Listing">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <form method="POST" action="{{ url_for('admin.toggle_internship', id=item.id) }}" class="d-inline">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  {% if item.is_active %}
+                    <button type="submit" class="btn btn-sm btn-outline-warning" title="Delist / Archive">
+                      <i class="bi bi-pause-fill me-1"></i>Archive
+                    </button>
+                  {% else %}
+                    <button type="submit" class="btn btn-sm btn-outline-success" title="Publish / Reactivate">
+                      <i class="bi bi-play-fill me-1"></i>Publish
+                    </button>
+                  {% endif %}
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-briefcase fs-2 d-block mb-2"></i>
+              No internships registered yet.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('internshipSearchInput');
+    const tableRows = document.querySelectorAll('.internship-row');
+    const countSpan = document.getElementById('internshipCount');
+
+    if (searchInput) {
+      searchInput.addEventListener('keyup', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        tableRows.forEach(row => {
+          const targets = row.querySelectorAll('.search-target');
+          let match = false;
+          targets.forEach(t => {
+            if (t.textContent.toLowerCase().includes(query)) match = true;
+          });
+
+          if (match) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        if (countSpan) countSpan.textContent = visibleCount;
+      });
+    }
+  });
+</script>
+{% endblock %}

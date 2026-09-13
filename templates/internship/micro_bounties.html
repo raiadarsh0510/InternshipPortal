@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Micro-Internship Bounties{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1"><i class="bi bi-trophy text-warning me-2"></i>Micro-Internships & Proof-of-Work Bounties</h3>
+      <p class="text-muted small mb-0">Complete bite-sized 5-40 hour industry tasks. Earn cash bounties, build verified GitHub proof-of-work, and fast-track to full internships.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    {% for b in bounties %}
+      <div class="col-md-6 col-lg-4">
+        <div class="glass-panel p-4 h-100 d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="badge bg-warning-subtle text-warning border fw-bold"><i class="bi bi-clock me-1"></i>~{{ b.estimated_hours }} Hours</span>
+            <span class="fs-5 fw-bold text-success">₹{{ "{:,}".format(b.bounty_amount) }}</span>
+          </div>
+          <h5 class="fw-bold text-primary mb-2">{{ b.title }}</h5>
+          <p class="small text-muted flex-grow-1">{{ b.deliverable_description }}</p>
+          <div class="small fw-semibold text-dark mb-3">Required: {{ b.skills_required }}</div>
+          <button class="btn btn-sm btn-outline-primary mt-auto" data-bs-toggle="modal" data-bs-target="#submitBountyModal{{ b.id }}">Submit Proof-of-Work</button>
+        </div>
+      </div>
+
+      <!-- Submission Modal -->
+      <div class="modal fade" id="submitBountyModal{{ b.id }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content glass-panel">
+            <div class="modal-header border-bottom">
+              <h5 class="modal-title fw-bold">Submit Deliverable</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('internship.submit_bounty', id=b.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold">Live Project / Demo URL</label>
+                  <input type="url" name="submission_url" class="form-control" placeholder="https://your-demo.vercel.app" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold">GitHub PR / Repository URL</label>
+                  <input type="url" name="github_pr_url" class="form-control" placeholder="https://github.com/username/repo">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold">Implementation Notes</label>
+                  <textarea name="notes" class="form-control" rows="3" placeholder="Explain your architectural design decisions..."></textarea>
+                </div>
+              </div>
+              <div class="modal-footer border-top">
+                <button type="submit" class="btn btn-teleportal btn-sm">Submit For Bounty Review</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

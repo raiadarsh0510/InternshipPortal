@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}User Governance & Compliance{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-1 small">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}" class="text-decoration-none">Admin</a></li>
+            <li class="breadcrumb-item active">Users</li>
+          </ol>
+        </nav>
+        <h3 class="fw-bold mb-1"><i class="bi bi-people-fill text-primary me-2"></i>User Governance Directory</h3>
+        <p class="text-muted mb-0">Inspect user accounts, manage compliance, and toggle platform access permissions.</p>
+      </div>
+      
+      <!-- Role Filters -->
+      <div class="btn-group rounded-pill shadow-sm p-1 bg-light border">
+        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-sm rounded-pill px-3 {% if not selected_role %}btn-primary text-white{% else %}btn-light text-muted{% endif %}">
+          All Users
+        </a>
+        <a href="{{ url_for('admin.manage_users', role='student') }}" class="btn btn-sm rounded-pill px-3 {% if selected_role == 'student' %}btn-primary text-white{% else %}btn-light text-muted{% endif %}">
+          Students
+        </a>
+        <a href="{{ url_for('admin.manage_users', role='company') }}" class="btn btn-sm rounded-pill px-3 {% if selected_role == 'company' %}btn-primary text-white{% else %}btn-light text-muted{% endif %}">
+          Employers
+        </a>
+        <a href="{{ url_for('admin.manage_users', role='admin') }}" class="btn btn-sm rounded-pill px-3 {% if selected_role == 'admin' %}btn-primary text-white{% else %}btn-light text-muted{% endif %}">
+          Admins
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Stats Bar -->
+  <div class="glass-card p-3 mb-4">
+    <div class="row align-items-center g-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" id="userSearchInput" class="form-control border-start-0" placeholder="Search by name, email, or role...">
+        </div>
+      </div>
+      <div class="col-md-6 text-md-end text-muted small">
+        Showing <span class="fw-bold text-dark" id="userCount">{{ users|length }}</span> registered accounts
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="glass-card p-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="usersTable">
+        <thead class="table-light">
+          <tr class="small text-muted">
+            <th>ID</th>
+            <th>Account</th>
+            <th>Role</th>
+            <th>Email Verified</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr class="user-row">
+            <td class="small text-muted font-monospace">#{{ u.id }}</td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-size: 0.9rem;">
+                  {{ u.name[:1].upper() }}
+                </div>
+                <div>
+                  <div class="fw-semibold text-dark search-target">{{ u.name }}</div>
+                  <div class="text-muted small search-target">{{ u.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge search-target {% if u.is_student %}badge-nep{% elif u.is_company %}bg-info-subtle text-info{% else %}bg-purple-subtle text-purple{% endif %}">
+                {{ u.role.capitalize() }}
+              </span>
+            </td>
+            <td>
+              {% if u.is_verified %}
+                <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle-fill me-1"></i>Verified</span>
+              {% else %}
+                <span class="badge bg-warning-subtle text-warning"><i class="bi bi-exclamation-circle me-1"></i>Pending</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if u.is_active %}
+                <span class="badge bg-success-subtle text-success">Active</span>
+              {% else %}
+                <span class="badge bg-danger-subtle text-danger">Suspended</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ u.created_at.strftime('%d %b %Y') }}</td>
+            <td class="text-end">
+              {% if u.id != current_user.id %}
+                <form method="POST" action="{{ url_for('admin.toggle_user_status', id=u.id) }}" class="d-inline">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  {% if u.is_active %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Suspend User Access" onclick="return confirm('Suspend this user account?');">
+                      <i class="bi bi-person-x me-1"></i>Suspend
+                    </button>
+                  {% else %}
+                    <button type="submit" class="btn btn-sm btn-outline-success" title="Reactivate User Access">
+                      <i class="bi bi-person-check me-1"></i>Activate
+                    </button>
+                  {% endif %}
+                </form>
+              {% else %}
+                <span class="badge bg-secondary-subtle text-secondary">Self</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-people fs-2 d-block mb-2"></i>
+              No users found matching current filter.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('userSearchInput');
+    const tableRows = document.querySelectorAll('.user-row');
+    const countSpan = document.getElementById('userCount');
+
+    if (searchInput) {
+      searchInput.addEventListener('keyup', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        tableRows.forEach(row => {
+          const targets = row.querySelectorAll('.search-target');
+          let match = false;
+          targets.forEach(t => {
+            if (t.textContent.toLowerCase().includes(query)) match = true;
+          });
+
+          if (match) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        if (countSpan) countSpan.textContent = visibleCount;
+      });
+    }
+  });
+</script>
+{% endblock %}

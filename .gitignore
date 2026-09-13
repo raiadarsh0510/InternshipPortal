@@ -24,7 +24,15 @@ static/images/profiles/*
 !static/images/profiles/Badal_Profile.png
 !static/images/profiles/images.jpg
 !static/images/profiles/images_1.jpg
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+
+# Caches & test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
 
 # OS files
 .DS_Store
 Thumbs.db
+cloudflared.exe

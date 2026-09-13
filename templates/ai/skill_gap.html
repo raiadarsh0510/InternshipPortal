@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Skill Gap & Roadmap{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="glass-panel p-4 p-md-5">
+        <h3 class="fw-bold text-primary mb-1"><i class="bi bi-diagram-3 me-2"></i>AI Skill Gap & Learning Roadmap</h3>
+        <p class="text-muted small mb-4">Discover the exact competencies you need to land top-tier internship offers.</p>
+
+        <form method="POST" action="{{ url_for('ai.skill_gap') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Target Engineering Role</label>
+            <select name="target_role" class="form-select">
+              <option value="Full Stack Developer">Full Stack Developer</option>
+              <option value="Data Analyst">Data Analyst</option>
+              <option value="AI/ML Engineer">AI/ML Engineer</option>
+              <option value="DevOps Engineer">DevOps Engineer</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Your Current Skills (Comma separated)</label>
+            <input type="text" name="current_skills" class="form-control" placeholder="Python, SQL, HTML, CSS" value="{{ current_user.student_profile.skills if current_user.student_profile else '' }}" required>
+          </div>
+          <button type="submit" class="btn btn-teleportal px-4 py-2">Generate 4-Week Roadmap</button>
+        </form>
+
+        {% if report %}
+          <hr class="my-4">
+          <h5 class="fw-bold mb-3">Personalized 4-Week Learning Plan</h5>
+          <div class="timeline">
+            {% for step in report.roadmap %}
+              <div class="border-start border-3 border-primary ps-3 mb-3">
+                <span class="badge bg-primary small mb-1">{{ step.week }}</span>
+                <div class="fw-bold">{{ step.focus }}</div>
+                <div class="small text-muted">{{ step.topics[0] }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

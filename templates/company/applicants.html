@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Applicant Pipeline{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="glass-panel p-4 p-md-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <div>
+        <h3 class="fw-bold mb-1">{{ internship.title }}</h3>
+        <p class="text-muted small mb-0">Candidate evaluation pipeline sorted by AI Match Compatibility score.</p>
+      </div>
+      <a href="{{ url_for('company.dashboard') }}" class="btn btn-sm btn-outline-secondary">Back to Openings</a>
+    </div>
+
+    {% if applicants %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr class="text-muted small border-bottom">
+              <th>Candidate</th>
+              <th>College & CGPA</th>
+              <th>AI Fit</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in applicants %}
+              <tr class="border-bottom">
+                <td>
+                  <div class="fw-bold">{{ a.applicant.name }}</div>
+                  <div class="small text-muted">{{ a.applicant.email }}</div>
+                  {% if a.applicant.student_profile and a.applicant.student_profile.github_url %}
+                    <a href="{{ a.applicant.student_profile.github_url }}" target="_blank" class="smaller text-decoration-none text-primary"><i class="bi bi-github me-1"></i>GitHub</a>
+                  {% endif %}
+                </td>
+                <td class="small text-muted">
+                  {{ a.applicant.student_profile.college if a.applicant.student_profile and a.applicant.student_profile.college else 'College N/A' }}<br>
+                  <span class="badge bg-light text-dark border">CGPA: {{ a.applicant.student_profile.cgpa if a.applicant.student_profile and a.applicant.student_profile.cgpa else 'N/A' }}</span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary text-white fs-6">{{ a.match_score }}%</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge bg-info-subtle text-info text-capitalize">{{ a.status.replace('_', ' ') }}</span>
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <form method="POST" action="{{ url_for('company.update_application_status', application_id=a.id) }}" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <input type="hidden" name="status" value="shortlisted">
+                      <button type="submit" class="btn btn-outline-success btn-sm">Shortlist</button>
+                    </form>
+                    <a href="{{ url_for('company.evaluate_academic', application_id=a.id) }}" class="btn btn-outline-primary btn-sm">NEP Grade</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-5 text-muted">
+        <p>No candidate applications for this role yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

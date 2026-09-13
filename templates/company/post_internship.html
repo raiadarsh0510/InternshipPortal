@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Post Internship{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <div class="glass-panel p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+          <div>
+            <h3 class="fw-bold mb-1">Post a High-Impact Internship</h3>
+            <p class="text-muted small mb-0">Reach top verified student engineers, designers, and developers nationwide.</p>
+          </div>
+          <a href="{{ url_for('company.dashboard') }}" class="btn btn-sm btn-outline-secondary">Cancel</a>
+        </div>
+
+        <form method="POST" action="{{ url_for('company.post_internship') }}">
+          {{ form.hidden_tag() }}
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Internship Role Title</label>
+              {{ form.title(class="form-control", placeholder="e.g. AI & Machine Learning Research Intern") }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Category</label>
+              {{ form.category_id(class="form-select") }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Work Mode</label>
+              {{ form.internship_type(class="form-select") }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">City / Location</label>
+              {{ form.location(class="form-control", placeholder="e.g. Bengaluru / Remote") }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Monthly Stipend (₹)</label>
+              {{ form.stipend_amount(class="form-control", placeholder="15000") }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Duration (Weeks)</label>
+              {{ form.duration_weeks(class="form-control", placeholder="8") }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Number of Openings</label>
+              {{ form.openings(class="form-control", placeholder="2") }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Application Deadline</label>
+              {{ form.deadline(class="form-control", type="date") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Required Skills (Comma separated)</label>
+              {{ form.skills(class="form-control", placeholder="Python, Docker, SQL, React, Git") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">About the Internship</label>
+              {{ form.description(class="form-control", rows="4", placeholder="Explain the project scope and learning experience...") }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Key Responsibilities</label>
+              {{ form.responsibilities(class="form-control", rows="3", placeholder="Day-to-day duties...") }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Candidate Requirements</label>
+              {{ form.requirements(class="form-control", rows="3", placeholder="Educational background, projects...") }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-teleportal px-4 py-2 mt-2">Publish Internship</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

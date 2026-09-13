@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1">Student Career Dashboard</h3>
+      <p class="text-muted small mb-0">Welcome back, {{ current_user.name }} • {{ current_user.student_profile.college if current_user.student_profile and current_user.student_profile.college else 'Candidate' }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('ai.resume_analyzer') }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-check me-1"></i>Check ATS Score</a>
+      <a href="{{ url_for('internship.list_internships') }}" class="btn btn-sm btn-teleportal"><i class="bi bi-search me-1"></i>Explore Roles</a>
+    </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">Applied</div>
+        <div class="fs-2 fw-bold text-primary">{{ stats.applied }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">Shortlisted</div>
+        <div class="fs-2 fw-bold text-success">{{ stats.shortlisted }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">Interviews</div>
+        <div class="fs-2 fw-bold text-warning">{{ stats.interviews }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">NEP 2020 Credits</div>
+        <div class="fs-2 fw-bold text-info">{{ stats.nep_credits }} pts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Active Applications -->
+    <div class="col-lg-8">
+      <div class="glass-panel p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">Recent Applications & Status Track</h5>
+          <a href="{{ url_for('student.applications') }}" class="small text-primary text-decoration-none fw-semibold">View All</a>
+        </div>
+        {% if recent_apps %}
+          <div class="table-responsive">
+            <table class="table table-borderless align-middle mb-0">
+              <thead>
+                <tr class="text-muted small border-bottom">
+                  <th>Role</th>
+                  <th>Company</th>
+                  <th>Match</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for a in recent_apps %}
+                  <tr class="border-bottom">
+                    <td class="fw-semibold">{{ a.internship_rel.title }}</td>
+                    <td class="text-muted small">{{ a.internship_rel.company_user.company_profile.company_name if a.internship_rel.company_user and a.internship_rel.company_user.company_profile else 'Verified Partner' }}</td>
+                    <td><span class="badge bg-primary-subtle text-primary">{{ a.match_score }}% Match</span></td>
+                    <td><span class="badge bg-info-subtle text-info text-capitalize">{{ a.status.replace('_', ' ') }}</span></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-muted">
+            <p class="mb-2">No applications submitted yet.</p>
+            <a href="{{ url_for('internship.list_internships') }}" class="btn btn-sm btn-primary">Browse Internships</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Upcoming Interviews & Recommendations -->
+    <div class="col-lg-4">
+      <div class="glass-panel p-4 mb-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-calendar-event text-warning me-2"></i>Upcoming Interviews</h5>
+        {% if upcoming_interviews %}
+          {% for inv in upcoming_interviews %}
+            <div class="border rounded p-2 mb-2 bg-light">
+              <div class="fw-semibold small">{{ inv.interview_type }}</div>
+              <div class="smaller text-muted">{{ inv.scheduled_at.strftime('%a, %b %d at %I:%M %p') }}</div>
+              <a href="{{ inv.meeting_link }}" target="_blank" class="btn btn-sm btn-success w-100 mt-2 py-1"><i class="bi bi-camera-video me-1"></i>Join Interview</a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted small mb-0">No pending interviews right now. Keep applying!</p>
+        {% endif %}
+      </div>
+
+      <div class="glass-panel p-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-stars text-primary me-2"></i>Recommended For You</h5>
+        {% for r in recommended %}
+          <div class="border-bottom pb-2 mb-2">
+            <a href="{{ url_for('internship.detail', id=r.id) }}" class="fw-semibold small text-decoration-none d-block text-truncate">{{ r.title }}</a>
+            <div class="d-flex justify-content-between text-muted smaller">
+              <span>{{ r.location }}</span>
+              <span class="text-success fw-semibold">₹{{ "{:,}".format(r.stipend_amount) }}/mo</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

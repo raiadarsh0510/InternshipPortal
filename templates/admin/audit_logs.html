@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}System Audit Logs & Security Telemetry{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-1 small">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}" class="text-decoration-none">Admin</a></li>
+            <li class="breadcrumb-item active">Audit Logs</li>
+          </ol>
+        </nav>
+        <h3 class="fw-bold mb-1"><i class="bi bi-shield-shaded text-primary me-2"></i>Security & Compliance Audit Trail</h3>
+        <p class="text-muted mb-0">Immutable tracking of authentication events, entity modifications, and administrator governance actions.</p>
+      </div>
+      <div>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="window.print()">
+          <i class="bi bi-printer me-1"></i>Print / Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="glass-card p-3 mb-4">
+    <div class="row align-items-center g-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" id="logSearchInput" class="form-control border-start-0" placeholder="Filter by action, entity, user ID, or IP...">
+        </div>
+      </div>
+      <div class="col-md-6 text-md-end text-muted small">
+        Displaying latest <span class="fw-bold text-dark" id="logCount">{{ logs|length }}</span> security events
+      </div>
+    </div>
+  </div>
+
+  <!-- Logs Table -->
+  <div class="glass-card p-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="logsTable">
+        <thead class="table-light">
+          <tr class="small text-muted">
+            <th>Event ID</th>
+            <th>Timestamp (UTC)</th>
+            <th>Action</th>
+            <th>Principal</th>
+            <th>Entity Type</th>
+            <th>Target ID</th>
+            <th>IP Address</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr class="log-row">
+            <td class="small text-muted font-monospace">#{{ log.id }}</td>
+            <td class="small text-nowrap">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>
+              <span class="badge bg-primary-subtle text-primary font-monospace search-target">{{ log.action }}</span>
+            </td>
+            <td class="small search-target">
+              {% if log.user_id %}
+                <span class="badge bg-light text-dark border">User #{{ log.user_id }}</span>
+              {% else %}
+                <span class="text-muted">System</span>
+              {% endif %}
+            </td>
+            <td class="small text-capitalize search-target">{{ log.entity_type or 'General' }}</td>
+            <td class="small text-muted font-monospace search-target">#{{ log.entity_id or '-' }}</td>
+            <td class="small font-monospace text-muted search-target">{{ log.ip_address or '127.0.0.1' }}</td>
+            <td class="small search-target" style="max-width: 300px;">
+              <div class="text-truncate" title="{{ log.details }}">
+                {{ log.details or '-' }}
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" class="text-center py-5 text-muted">
+              <i class="bi bi-shield-check fs-2 d-block mb-2 text-success"></i>
+              No audit logs recorded in system.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('logSearchInput');
+    const tableRows = document.querySelectorAll('.log-row');
+    const countSpan = document.getElementById('logCount');
+
+    if (searchInput) {
+      searchInput.addEventListener('keyup', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        tableRows.forEach(row => {
+          const targets = row.querySelectorAll('.search-target');
+          let match = false;
+          targets.forEach(t => {
+            if (t.textContent.toLowerCase().includes(query)) match = true;
+          });
+
+          if (match) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        if (countSpan) countSpan.textContent = visibleCount;
+      });
+    }
+  });
+</script>
+{% endblock %}

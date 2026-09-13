@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+      <div class="glass-panel p-4 p-md-5">
+        <div class="text-center mb-4">
+          <h3 class="fw-bold text-primary">Get Started</h3>
+          <p class="text-muted small">Join verified students and enterprise employers</p>
+          <div class="btn-group w-100 mt-2" role="group">
+            <a href="{{ url_for('auth.register', role='student') }}" class="btn btn-sm {% if role_type != 'company' %}btn-primary{% else %}btn-outline-primary{% endif %}">Student Registration</a>
+            <a href="{{ url_for('auth.register', role='company') }}" class="btn btn-sm {% if role_type == 'company' %}btn-primary{% else %}btn-outline-primary{% endif %}">Company / Employer</a>
+          </div>
+        </div>
+
+        {% if role_type == 'company' %}
+          <form method="POST" action="{{ url_for('auth.register', role='company') }}">
+            {{ company_form.hidden_tag() }}
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Company Legal Name</label>
+              {{ company_form.company_name(class="form-control", placeholder="e.g. Nexus Innovations Pvt Ltd") }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">HR / Contact Person Name</label>
+              {{ company_form.hr_name(class="form-control", placeholder="e.g. Aditi Rao") }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Corporate Email</label>
+              {{ company_form.email(class="form-control", placeholder="careers@company.com") }}
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Password</label>
+                {{ company_form.password(class="form-control", placeholder="••••••••") }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Confirm Password</label>
+                {{ company_form.confirm_password(class="form-control", placeholder="••••••••") }}
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Headquarters Location</label>
+              {{ company_form.location(class="form-control", placeholder="City, State") }}
+            </div>
+            <button type="submit" class="btn btn-teleportal w-100 py-2 mt-2">Register Company Account</button>
+          </form>
+        {% else %}
+          <form method="POST" action="{{ url_for('auth.register', role='student') }}">
+            {{ student_form.hidden_tag() }}
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Full Name</label>
+              {{ student_form.name(class="form-control", placeholder="e.g. Adarsh Rai") }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">College / University Email</label>
+              {{ student_form.email(class="form-control", placeholder="student@university.edu") }}
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Password</label>
+                {{ student_form.password(class="form-control", placeholder="••••••••") }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Confirm Password</label>
+                {{ student_form.confirm_password(class="form-control", placeholder="••••••••") }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">College Name</label>
+                {{ student_form.college(class="form-control", placeholder="e.g. SRDT Institute") }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Branch / Major</label>
+                {{ student_form.branch(class="form-control", placeholder="e.g. Computer Science") }}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-teleportal w-100 py-2 mt-2">Create Student Account</button>
+          </form>
+        {% endif %}
+
+        <div class="text-center mt-4 border-top pt-3">
+          <span class="small text-muted">Already registered? </span>
+          <a href="{{ url_for('auth.login') }}" class="small fw-semibold text-primary">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

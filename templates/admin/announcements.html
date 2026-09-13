@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}System Announcements & Broadcasts{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-1 small">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}" class="text-decoration-none">Admin</a></li>
+            <li class="breadcrumb-item active">Announcements</li>
+          </ol>
+        </nav>
+        <h3 class="fw-bold mb-1"><i class="bi bi-megaphone-fill text-primary me-2"></i>Broadcast Communications</h3>
+        <p class="text-muted mb-0">Publish system-wide notifications, policy updates, and deadline reminders to platform users.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Broadcast Creator Form -->
+    <div class="col-lg-5">
+      <div class="glass-card p-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-send-plus text-primary me-2"></i>New Broadcast Message</h5>
+        <form method="POST" action="{{ url_for('admin.announcements') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Announcement Title</label>
+            <input type="text" name="title" class="form-control" placeholder="e.g., Summer 2026 NEP Credit Deadlines" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Target Audience</label>
+            <select name="target_role" class="form-select" required>
+              <option value="all">All Platform Users (Universal)</option>
+              <option value="student">Students & Candidates Only</option>
+              <option value="company">Employers & Recruiters Only</option>
+              <option value="admin">Administrators Only</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Broadcast Content / Details</label>
+            <textarea name="content" rows="5" class="form-control" placeholder="Detail the announcement, mandatory guidelines, or relevant timeline..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-teleportal w-100 py-2">
+            <i class="bi bi-broadcast me-1"></i>Publish Broadcast Now
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Active Broadcasts History -->
+    <div class="col-lg-7">
+      <div class="glass-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0"><i class="bi bi-clock-history text-secondary me-2"></i>Broadcast History</h5>
+          <span class="badge bg-light text-muted border">{{ announcements|length }} total</span>
+        </div>
+
+        {% if announcements %}
+          <div class="d-flex flex-column gap-3">
+            {% for a in announcements %}
+            <div class="p-3 rounded border bg-white shadow-sm">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h6 class="fw-bold text-dark mb-1">{{ a.title }}</h6>
+                  <span class="badge {% if a.target_role == 'student' %}badge-nep{% elif a.target_role == 'company' %}bg-info-subtle text-info{% else %}bg-primary-subtle text-primary{% endif %} text-uppercase" style="font-size: 0.7rem;">
+                    Target: {{ a.target_role }}
+                  </span>
+                </div>
+                <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>{{ a.created_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+              </div>
+              <p class="text-muted small mb-0" style="white-space: pre-line;">{{ a.content }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-chat-square-dots fs-2 d-block mb-2"></i>
+            No announcements broadcast yet. Use the form to send your first message.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

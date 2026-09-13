@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}NEP 2020 Academic Credits{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="glass-panel p-4 p-md-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <div>
+        <h3 class="fw-bold mb-1"><i class="bi bi-award text-success me-2"></i>NEP 2020 Academic Bank of Credits (ABC)</h3>
+        <p class="text-muted small mb-0">Official academic evaluations certified by industry supervisors and university faculty mentors.</p>
+      </div>
+      <span class="badge badge-nep fs-6">AICTE Aligned</span>
+    </div>
+
+    {% if evaluations %}
+      <div class="row g-4">
+        {% for e in evaluations %}
+          <div class="col-md-6">
+            <div class="border rounded p-4 bg-white shadow-sm">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold text-primary mb-0">{{ e.application.internship_rel.title }}</h5>
+                <span class="badge bg-success fs-6">Grade: {{ e.grade }}</span>
+              </div>
+              <div class="small text-muted mb-3">Certified by {{ e.college_name }} & {{ e.faculty_mentor_name }}</div>
+              
+              <div class="row g-2 text-center mb-3">
+                <div class="col-4 bg-light p-2 rounded">
+                  <div class="smaller text-muted">Credits</div>
+                  <div class="fw-bold text-success">{{ e.nep_credits_awarded }} Pts</div>
+                </div>
+                <div class="col-4 bg-light p-2 rounded">
+                  <div class="smaller text-muted">Attendance</div>
+                  <div class="fw-bold text-primary">{{ e.attendance_percentage }}%</div>
+                </div>
+                <div class="col-4 bg-light p-2 rounded">
+                  <div class="smaller text-muted">Performance</div>
+                  <div class="fw-bold text-dark">{{ e.overall_performance }}/10</div>
+                </div>
+              </div>
+
+              <div class="small fst-italic text-muted border-top pt-2">
+                "{{ e.company_remarks }}"
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="text-muted">No completed academic evaluations yet. Once an employer submits your final internship review, credits will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

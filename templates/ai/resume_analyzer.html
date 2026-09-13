@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}AI Resume ATS Analyzer{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="glass-panel p-4 p-md-5 h-100">
+        <h4 class="fw-bold text-primary mb-1"><i class="bi bi-file-earmark-check me-2"></i>ATS Resume Scorer</h4>
+        <p class="text-muted small mb-4">Paste your raw resume text to audit formatting, keywords, and ATS parseability.</p>
+
+        <form method="POST" action="{{ url_for('ai.resume_analyzer') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Target Engineering / Career Role</label>
+            <select name="target_role" class="form-select">
+              <option value="Software Engineer">Software Engineer</option>
+              <option value="Frontend Developer">Frontend Developer</option>
+              <option value="Backend Developer">Backend Developer</option>
+              <option value="Data Scientist">Data Scientist</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Resume Text</label>
+            <textarea name="resume_text" class="form-control" rows="12" placeholder="Paste your resume content here (Education, Experience, Projects, Skills)..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-teleportal w-100 py-2">Analyze ATS Compatibility</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Results Panel -->
+    <div class="col-lg-6">
+      <div class="glass-panel p-4 p-md-5 h-100">
+        <h4 class="fw-bold mb-3">Analysis & Optimization Report</h4>
+        {% if result %}
+          <div class="text-center p-4 bg-light rounded mb-4">
+            <div class="small text-muted fw-semibold">Overall ATS Match Score</div>
+            <div class="display-3 fw-bold text-primary">{{ result.ats_score }}<span class="fs-5 text-muted">/100</span></div>
+            <div class="progress mt-2" style="height: 8px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: {{ result.ats_score }}%;"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="small fw-bold text-success d-block mb-1">Detected Keywords & Technical Skills</label>
+            <div class="d-flex flex-wrap gap-1">
+              {% for s in result.found_skills %}
+                <span class="badge bg-success-subtle text-success border">{{ s }}</span>
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if result.missing_skills %}
+            <div class="mb-3">
+              <label class="small fw-bold text-danger d-block mb-1">Critical Missing Keywords</label>
+              <div class="d-flex flex-wrap gap-1">
+                {% for m in result.missing_skills %}
+                  <span class="badge bg-danger-subtle text-danger border">{{ m }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="mt-4">
+            <label class="small fw-bold text-dark d-block mb-2">Actionable ATS Improvement Suggestions</label>
+            <ul class="list-group list-group-flush small">
+              {% for tip in result.suggestions %}
+                <li class="list-group-item bg-transparent px-0 text-muted"><i class="bi bi-arrow-right-circle text-primary me-2"></i>{{ tip }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+            <p class="mt-2 mb-0">Submit your resume text on the left to see instant ATS scoring and structural suggestions.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

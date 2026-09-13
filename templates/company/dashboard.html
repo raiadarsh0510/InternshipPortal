@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Employer Dashboard{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1">Employer Hiring Hub</h3>
+      <p class="text-muted small mb-0">{{ current_user.company_profile.company_name if current_user.company_profile else current_user.name }} • Hiring Operations Center</p>
+    </div>
+    <a href="{{ url_for('company.post_internship') }}" class="btn btn-teleportal"><i class="bi bi-plus-circle me-1"></i>Post New Internship</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">Active Openings</div>
+        <div class="fs-2 fw-bold text-primary">{{ stats.active_jobs }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">Total Applicants</div>
+        <div class="fs-2 fw-bold text-success">{{ stats.total_applicants }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">Shortlisted Candidates</div>
+        <div class="fs-2 fw-bold text-info">{{ stats.shortlisted }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="glass-panel p-3 text-center">
+        <div class="text-muted small fw-semibold">Interviews Scheduled</div>
+        <div class="fs-2 fw-bold text-warning">{{ stats.interviews_scheduled }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-panel p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0">Active Internship Postings</h5>
+    </div>
+    {% if internships %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr class="text-muted small border-bottom">
+              <th>Title & Mode</th>
+              <th>Stipend</th>
+              <th>Applicants</th>
+              <th>Deadline</th>
+              <th>Pipeline Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in internships %}
+              <tr class="border-bottom">
+                <td>
+                  <span class="fw-bold text-primary">{{ i.title }}</span>
+                  <div class="small text-muted">{{ i.location }} • {{ i.internship_type }}</div>
+                </td>
+                <td class="small fw-semibold text-success">₹{{ "{:,}".format(i.stipend_amount) }}/mo</td>
+                <td>
+                  <span class="badge bg-primary-subtle text-primary">{{ i.applications.count() }} Applied</span>
+                </td>
+                <td class="small text-muted">{{ i.deadline.strftime('%b %d, %Y') }}</td>
+                <td>
+                  <a href="{{ url_for('company.view_applicants', internship_id=i.id) }}" class="btn btn-sm btn-outline-primary py-1"><i class="bi bi-people me-1"></i>Review Pipeline</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-4 text-muted">
+        <p>No internships posted yet.</p>
+        <a href="{{ url_for('company.post_internship') }}" class="btn btn-sm btn-primary">Create First Opening</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

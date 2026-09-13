@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}AI Mock Interviewer{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <div class="glass-panel p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+          <div>
+            <h3 class="fw-bold mb-1"><i class="bi bi-mic text-success me-2"></i>AI Mock Interview Simulator</h3>
+            <p class="text-muted small mb-0">Simulated {{ int_type }} interview for {{ role }}. Practice answering with structured clarity.</p>
+          </div>
+          <div class="btn-group">
+            <a href="{{ url_for('ai.mock_interview', type='Technical') }}" class="btn btn-sm {% if int_type == 'Technical' %}btn-primary{% else %}btn-outline-primary{% endif %}">Technical</a>
+            <a href="{{ url_for('ai.mock_interview', type='HR') }}" class="btn btn-sm {% if int_type == 'HR' %}btn-primary{% else %}btn-outline-primary{% endif %}">Behavioral / HR</a>
+          </div>
+        </div>
+
+        <!-- Question Carousel / Card -->
+        <div class="p-4 bg-light rounded mb-4 border">
+          <span class="badge bg-primary mb-2">Question 1 of {{ questions|length }}</span>
+          <h5 id="currentQuestion" class="fw-bold text-dark">{{ questions[0] }}</h5>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Your Spoken or Written Response</label>
+          <textarea id="candidateAnswer" class="form-control" rows="5" placeholder="Type your answer or use the microphone to speak..."></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <button id="voiceBtn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-mic-fill me-1"></i>Start Voice Dictation</button>
+          <button id="evaluateBtn" class="btn btn-teleportal px-4">Evaluate Answer</button>
+        </div>
+
+        <!-- Evaluation Feedback Area -->
+        <div id="evalArea" class="d-none border rounded p-4 bg-white shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold mb-0">AI Performance Evaluation</h5>
+            <span id="evalScore" class="badge bg-success fs-6">Score: 8/10</span>
+          </div>
+          <p id="evalFeedback" class="small text-muted mb-2"></p>
+          <div class="small fw-semibold text-success mb-1">Key Strengths: <span id="evalStrengths" class="fw-normal text-muted"></span></div>
+          <div class="small fw-semibold text-danger">Area for Improvement: <span id="evalImprove" class="fw-normal text-muted"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  // Answer evaluation AJAX
+  const evalBtn = document.getElementById("evaluateBtn");
+  const evalArea = document.getElementById("evalArea");
+  const ansInput = document.getElementById("candidateAnswer");
+  const qTitle = document.getElementById("currentQuestion");
+
+  evalBtn.addEventListener("click", function() {
+    const ans = ansInput.value.trim();
+    if (!ans) {
+      alert("Please provide an answer to evaluate.");
+      return;
+    }
+    evalBtn.disabled = true;
+    evalBtn.innerText = "Evaluating...";
+
+    fetch("/ai/mock-interview/evaluate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token() }}"},
+      body: JSON.stringify({
+        question: qTitle.innerText,
+        answer: ans,
+        role: "{{ role }}"
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      evalBtn.disabled = false;
+      evalBtn.innerText = "Evaluate Answer";
+      evalArea.classList.remove("d-none");
+      document.getElementById("evalScore").innerText = `Score: ${data.score}/10`;
+      document.getElementById("evalFeedback").innerText = data.feedback;
+      document.getElementById("evalStrengths").innerText = data.strengths;
+      document.getElementById("evalImprove").innerText = data.improvement;
+    })
+    .catch(() => {
+      evalBtn.disabled = false;
+      evalBtn.innerText = "Evaluate Answer";
+      alert("Evaluation failed. Please try again.");
+    });
+  });
+
+  // Web Speech Recognition Support
+  const voiceBtn = document.getElementById("voiceBtn");
+  if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    voiceBtn.addEventListener("click", function() {
+      recognition.start();
+      voiceBtn.innerText = "Listening...";
+    });
+
+    recognition.onresult = function(event) {
+      ansInput.value += " " + event.results[0][0].transcript;
+      voiceBtn.innerText = "Start Voice Dictation";
+    };
+
+    recognition.onerror = function() {
+      voiceBtn.innerText = "Start Voice Dictation";
+    };
+  } else {
+    voiceBtn.classList.add("d-none");
+  }
+</script>
+{% endblock %}
