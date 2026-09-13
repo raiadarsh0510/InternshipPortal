@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +24,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Check Python Syntax
+    - name: Check Syntax & Compilation
       run: |
-        python -m py_compile wsgi.py run.py config.py app/database.py app/models.py app/utils.py app/routes/auth.py app/routes/dashboard.py app/routes/internship.py app/routes/profile.py app/routes/ai.py
+        python -m compileall app tests seeds wsgi.py run.py config.py
 
-    - name: Smoke Test Application Boot
+    - name: Run Test Suite (Pytest)
       run: |
-        python -c "from wsgi import app; print(app.name)"
+        pytest tests/ -v
+
+    - name: Verify Application Boot
+      run: |
+        python -c "from wsgi import app; print('Successfully initialized:', app.name)"

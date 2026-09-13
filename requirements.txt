@@ -10,6 +10,7 @@ email-validator>=2.1.0
 itsdangerous>=2.1.2
 PyMySQL>=1.1.0
 cryptography>=42.0.0
+psycopg2-binary>=2.9.9
 gunicorn>=21.2.0
 python-dotenv>=1.0.0
 openai>=0.28.1

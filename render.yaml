@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: teleportal
+    runtime: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "pip install -r requirements.txt && python seeds/seed_data.py"
+    startCommand: "gunicorn wsgi:app"
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: FLASK_ENV
+        value: prod
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REDIS_URL
+        value: memory://
