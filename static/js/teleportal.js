@@ -1,15 +1,30 @@
 // TELEPORTAL Client JavaScript Utilities
+(function() {
+  // Apply saved theme immediately
+  const savedTheme = localStorage.getItem("teleportal_theme");
+  if (savedTheme === "dark") {
+    document.documentElement.setAttribute("data-bs-theme", "dark");
+    if (document.body) document.body.classList.add("dark-mode");
+  }
+})();
+
 document.addEventListener("DOMContentLoaded", function() {
   // Dark Mode Toggle
   const themeToggle = document.getElementById("themeToggle");
-  if (themeToggle) {
-    if (localStorage.getItem("teleportal_theme") === "dark") {
-      document.body.classList.add("dark-mode");
+  const isCurrentlyDark = localStorage.getItem("teleportal_theme") === "dark";
+  
+  if (isCurrentlyDark) {
+    document.documentElement.setAttribute("data-bs-theme", "dark");
+    document.body.classList.add("dark-mode");
+    if (themeToggle) {
       themeToggle.innerHTML = '<i class="bi bi-sun-fill text-warning"></i>';
     }
+  }
+
+  if (themeToggle) {
     themeToggle.addEventListener("click", function() {
-      document.body.classList.toggle("dark-mode");
-      const isDark = document.body.classList.contains("dark-mode");
+      const isDark = document.body.classList.toggle("dark-mode");
+      document.documentElement.setAttribute("data-bs-theme", isDark ? "dark" : "light");
       localStorage.setItem("teleportal_theme", isDark ? "dark" : "light");
       themeToggle.innerHTML = isDark ? '<i class="bi bi-sun-fill text-warning"></i>' : '<i class="bi bi-moon-stars-fill"></i>';
     });

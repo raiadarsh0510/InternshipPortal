@@ -16,9 +16,18 @@
   <!-- Teleportal Modern Glassmorphism CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/teleportal.css') }}">
   
+  <script>
+    (function() {
+      if (localStorage.getItem("teleportal_theme") === "dark") {
+        document.documentElement.setAttribute("data-bs-theme", "dark");
+        document.documentElement.classList.add("dark-mode");
+      }
+    })();
+  </script>
+  
   {% block styles %}{% endblock %}
 </head>
-<body>
+<body class="{% if request.cookies.get('teleportal_theme') == 'dark' %}dark-mode{% endif %}">
 
   <!-- Top Glass Navigation -->
   <nav class="navbar navbar-expand-lg glass-nav sticky-top">
